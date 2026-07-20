@@ -1,0 +1,17 @@
+{
+  "name": "maatwerkgaragedeur",
+  "version": "1.0.0",
+  "description": "MaatwerkGaragedeur.nl - Drutex D-GATE garagedeuren op maat, geleverd en gemonteerd",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ejs": "^3.1.10",
+    "resend": "^3.2.0"
+  }
+}

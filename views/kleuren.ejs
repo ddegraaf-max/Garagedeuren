@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <title>Kleuren &amp; panelen — Drutex D-GATE | MaatwerkGaragedeur.nl</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<section class="sectie pagina-kop">
+  <div class="wrap">
+    <p class="kicker">Kleuren &amp; paneelstructuren</p>
+    <h1>Maak 'm van jou</h1>
+    <p class="pagina-intro">Kies uit de volledige RAL-waaier en een reeks houtdecoren. Klik op een kleur en zie direct het effect op de deur. De weergegeven kleuren zijn indicatief — tijdens de inmeting laten we echte kleurstalen zien.</p>
+  </div>
+</section>
+
+<section class="sectie">
+  <div class="wrap kleuren-grid">
+    <div class="kleuren-preview">
+      <%- include('partials/deur-svg') %>
+    </div>
+    <div class="kleuren-lijst">
+      <% ['klassiek','grijs','hout','kleur'].forEach(cat => { %>
+        <h3 class="kleur-cat">
+          <%= { klassiek: 'Wit & crème', grijs: 'Grijs & zwart', hout: 'Houtdecoren', kleur: 'Kleuraccenten' }[cat] %>
+        </h3>
+        <div class="kleur-rooster">
+          <% kleuren.filter(k => k.cat === cat).forEach(k => { %>
+            <button class="kleur-tegel" style="--c: <%= k.hex %>" data-hex="<%= k.hex %>" data-naam="<%= k.naam %>">
+              <span class="kleur-vlak"></span>
+              <span class="kleur-naam"><%= k.naam %></span>
+            </button>
+          <% }) %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="sectie sectie-cta-blok">
+  <div class="wrap cta-blok">
+    <h2>Kleur gekozen?</h2>
+    <p>Vermeld je favoriete kleur in de offerteaanvraag — dan rekenen we die direct mee in de prijsopgave.</p>
+    <a href="/offerte" class="btn btn-primair btn-groot">Offerte aanvragen</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>

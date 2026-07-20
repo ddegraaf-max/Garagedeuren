@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <title>Drutex D-GATE modellen — U, B en T | MaatwerkGaragedeur.nl</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<section class="sectie pagina-kop">
+  <div class="wrap">
+    <p class="kicker">Drutex D-GATE sectionaaldeuren</p>
+    <h1>De modellen</h1>
+    <p class="pagina-intro">Alle D-GATE deuren delen dezelfde basis: op maat gemaakt, hoogwaardig geïsoleerd en veilig. Het verschil zit in het veersysteem — bepalend voor inbouwruimte, paneelgewicht en prijs.</p>
+  </div>
+</section>
+
+<section class="sectie">
+  <div class="wrap">
+    <div class="model-detail-lijst">
+      <% modellen.forEach((m, i) => { %>
+        <article class="model-detail" id="<%= m.slug %>">
+          <div class="model-detail-info">
+            <span class="model-index">0<%= i + 1 %></span>
+            <h2><%= m.naam %></h2>
+            <span class="model-sub"><%= m.sub %></span>
+            <p><%= m.kort %></p>
+            <ul class="vinkjes">
+              <% m.punten.forEach(p => { %><li><%= p %></li><% }) %>
+            </ul>
+            <a href="/offerte?model=<%= m.naam %>" class="btn btn-secundair">Offerte voor <%= m.naam %></a>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="sectie sectie-donker">
+  <div class="wrap">
+    <h2 class="sectie-titel">Specificaties (alle modellen)</h2>
+    <div class="spec-grid">
+      <div class="spec">
+        <h3>Panelen</h3>
+        <p>40 of 60&nbsp;mm dik, glad of Woodgrain-structuur. Zonder profilering, met lage of met hoge profilering. FingerSafe-veiligheidsprofiel standaard.</p>
+      </div>
+      <div class="spec">
+        <h3>Kleuren</h3>
+        <p>Gelakt volgens de volledige RAL-kleurenwaaier, plus houtdecoren zoals Golden Oak, Winchester en Turner Oak.</p>
+      </div>
+      <div class="spec">
+        <h3>Beglazing</h3>
+        <p>Optionele raamsecties met PVC- of INOX-kader en acrylglas — voor daglicht in de garage.</p>
+      </div>
+      <div class="spec">
+        <h3>Geleiders</h3>
+        <p>Rails en kozijnen in verzinkt staal, zwart/zwart of wit/zwart.</p>
+      </div>
+      <div class="spec">
+        <h3>Aandrijving</h3>
+        <p>Handbediend of elektrisch met motoren van Somfy, Beninca, Sommer, Came of AVO. Koppelbaar aan smart-home-systemen.</p>
+      </div>
+      <div class="spec">
+        <h3>Veiligheid &amp; garantie</h3>
+        <p>Dubbel kabelsysteem, veerbreukbeveiliging, SafeEdge-rails zonder scherpe randen. Veren berekend op 15.000–25.000 cycli. 2 jaar garantie, verlengbaar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sectie sectie-cta-blok">
+  <div class="wrap cta-blok">
+    <h2>Twijfel je welk model past?</h2>
+    <p>Geen probleem — vraag een offerte aan en wij adviseren op basis van je garage welke uitvoering het beste (en voordeligste) is.</p>
+    <a href="/offerte" class="btn btn-primair btn-groot">Vrijblijvende offerte</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>

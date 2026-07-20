@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <title>Offerte aanvragen — nieuwe garagedeur | MaatwerkGaragedeur.nl</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<section class="sectie pagina-kop">
+  <div class="wrap">
+    <p class="kicker">Vrijblijvend &middot; binnen 1 werkdag reactie</p>
+    <h1>Offerte aanvragen</h1>
+    <p class="pagina-intro">Meet de breedte en hoogte van je garageopening bij benadering op (op de centimeter nauwkeurig hoeft niet — dat doen wij bij de gratis inmeting) en vul het formulier in.</p>
+  </div>
+</section>
+
+<section class="sectie">
+  <div class="wrap offerte-wrap">
+    <% if (verzonden) { %>
+      <div class="melding melding-ok">
+        <h2>Aanvraag ontvangen ✓</h2>
+        <p>Bedankt! We nemen binnen 1 werkdag contact met je op met een vrijblijvende prijsopgave. Heb je een e-mailadres opgegeven, dan vind je daar een bevestiging.</p>
+        <a href="/" class="btn btn-secundair">Terug naar home</a>
+      </div>
+    <% } else { %>
+      <% if (typeof fout !== 'undefined' && fout) { %>
+        <div class="melding melding-fout">
+          <p>Er ging iets mis bij het versturen. Probeer het later opnieuw of mail ons direct.</p>
+        </div>
+      <% } %>
+      <form method="POST" action="/offerte" class="offerte-form">
+        <fieldset>
+          <legend>Je gegevens</legend>
+          <div class="veld-rij">
+            <label>Naam *<input type="text" name="naam" required autocomplete="name"></label>
+            <label>E-mail *<input type="email" name="email" required autocomplete="email"></label>
+          </div>
+          <div class="veld-rij">
+            <label>Telefoon<input type="tel" name="telefoon" autocomplete="tel"></label>
+            <label>Postcode *<input type="text" name="postcode" required autocomplete="postal-code" placeholder="1234 AB"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Je garageopening</legend>
+          <div class="veld-rij">
+            <label>Breedte (cm) *<input type="number" name="breedte" min="150" max="600" required placeholder="bijv. 250"></label>
+            <label>Hoogte (cm) *<input type="number" name="hoogte" min="150" max="350" required placeholder="bijv. 212"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Je voorkeuren <span class="optioneel">(optioneel — wij adviseren graag)</span></legend>
+          <div class="veld-rij">
+            <label>Model
+              <select name="model" id="modelSelect">
+                <option value="">Weet ik nog niet / advies gewenst</option>
+                <option>D-GATE U (torsieveer vóór)</option>
+                <option>D-GATE B (torsieveer achter)</option>
+                <option>D-GATE T (trekveren)</option>
+              </select>
+            </label>
+            <label>Paneel
+              <select name="paneel">
+                <option value="">Weet ik nog niet</option>
+                <option>40 mm — glad</option>
+                <option>40 mm — Woodgrain</option>
+                <option>60 mm — glad</option>
+                <option>60 mm — Woodgrain</option>
+              </select>
+            </label>
+          </div>
+          <div class="veld-rij">
+            <label>Kleur
+              <input type="text" name="kleur" placeholder="bijv. Antraciet RAL 7016 of Golden Oak">
+            </label>
+            <label>Bediening
+              <select name="motor">
+                <option value="">Weet ik nog niet</option>
+                <option>Handbediend</option>
+                <option>Elektrisch met handzender</option>
+                <option>Elektrisch + smart home</option>
+              </select>
+            </label>
+          </div>
+          <label>Opmerkingen
+            <textarea name="opmerking" rows="4" placeholder="Bijv. huidige deur is een kanteldeur, beperkte ruimte boven de opening, gewenste beglazing…"></textarea>
+          </label>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primair btn-groot">Verstuur aanvraag</button>
+        <p class="form-klein">Door te versturen ga je akkoord met onze <a href="/privacy">privacyverklaring</a>. Je gegevens worden uitsluitend gebruikt om je aanvraag te behandelen.</p>
+      </form>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>

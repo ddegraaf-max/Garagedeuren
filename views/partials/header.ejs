@@ -1,0 +1,22 @@
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="logo" aria-label="MaatwerkGaragedeur.nl">
+      <svg viewBox="0 0 34 34" width="34" height="34" aria-hidden="true">
+        <rect width="34" height="34" rx="7" fill="var(--antraciet)"/>
+        <rect x="6" y="9"  width="22" height="4.4" rx="1.2" fill="var(--accent)"/>
+        <rect x="6" y="15.2" width="22" height="4.4" rx="1.2" fill="#f7f5f0"/>
+        <rect x="6" y="21.4" width="22" height="4.4" rx="1.2" fill="#f7f5f0"/>
+      </svg>
+      <span>Maatwerk<em>Garagedeur</em>.nl</span>
+    </a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav">
+      <a href="/modellen" class="<%= page === 'modellen' ? 'actief' : '' %>">Modellen</a>
+      <a href="/kleuren" class="<%= page === 'kleuren' ? 'actief' : '' %>">Kleuren</a>
+      <a href="/#werkwijze">Werkwijze</a>
+      <a href="/offerte" class="nav-cta">Offerte aanvragen</a>
+    </nav>
+  </div>
+</header>

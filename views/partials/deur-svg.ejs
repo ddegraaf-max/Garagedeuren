@@ -1,0 +1,63 @@
+<div class="deur-visual">
+  <svg id="deurSvg" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voorbeeld garagedeur">
+    <!-- gevel -->
+    <rect x="0" y="0" width="560" height="380" fill="#e8e2d6"/>
+    <rect x="0" y="0" width="560" height="380" fill="url(#steen)" opacity="0.45"/>
+    <defs>
+      <pattern id="steen" width="56" height="24" patternUnits="userSpaceOnUse">
+        <rect width="56" height="24" fill="none"/>
+        <path d="M0 12 H56 M0 24 H56 M28 0 V12 M0 12 M14 12 V24 M42 12 V24" stroke="#d5ccbc" stroke-width="1.4" fill="none"/>
+      </pattern>
+    </defs>
+    <!-- kozijn -->
+    <rect x="70" y="40" width="420" height="340" fill="#2c3136"/>
+    <!-- panelen -->
+    <g id="deurPanelen">
+      <% for (let i = 0; i < 4; i++) { %>
+        <g class="paneel" transform="translate(80, <%= 50 + i * 81 %>)">
+          <rect width="400" height="77" rx="2" class="paneel-vlak" fill="#383e42"/>
+          <!-- hoge profilering (2 groeven per paneel) -->
+          <g class="profiel profiel-hoog">
+            <rect y="17" width="400" height="3.5" fill="#000" opacity="0.22"/>
+            <rect y="21" width="400" height="2" fill="#fff" opacity="0.12"/>
+            <rect y="53" width="400" height="3.5" fill="#000" opacity="0.22"/>
+            <rect y="57" width="400" height="2" fill="#fff" opacity="0.12"/>
+          </g>
+          <!-- lage profilering (1 groef) -->
+          <g class="profiel profiel-laag" style="display:none">
+            <rect y="36" width="400" height="3.5" fill="#000" opacity="0.22"/>
+            <rect y="40" width="400" height="2" fill="#fff" opacity="0.12"/>
+          </g>
+          <!-- paneelnaad + lichtval -->
+          <rect y="0" width="400" height="2.5" fill="#000" opacity="0.28"/>
+          <rect y="3" width="400" height="2" fill="#fff" opacity="0.10"/>
+        </g>
+      <% } %>
+    </g>
+    <!-- handgreep -->
+    <rect x="265" y="345" width="30" height="9" rx="4.5" fill="#1a1d1f"/>
+    <!-- stoep -->
+    <rect x="0" y="380" width="560" height="40" fill="#b9b2a4"/>
+    <rect x="0" y="380" width="560" height="4" fill="#9c9587"/>
+  </svg>
+  <div class="deur-opties">
+    <div class="optie-groep">
+      <span class="optie-label">Kleur</span>
+      <div class="swatches" id="kleurSwatches">
+        <% const previewKleuren = kleuren.filter(k => ['Antraciet (RAL 7016)','Wit FX','Golden Oak','Basaltgrijs','Jet Black','Kwartsgrijs','Donkergroen','Winchester'].includes(k.naam)); %>
+        <% previewKleuren.forEach((k, i) => { %>
+          <button class="swatch <%= k.naam.startsWith('Antraciet') ? 'actief' : '' %>" style="--c: <%= k.hex %>" data-hex="<%= k.hex %>" title="<%= k.naam %>" aria-label="<%= k.naam %>"></button>
+        <% }) %>
+      </div>
+    </div>
+    <div class="optie-groep">
+      <span class="optie-label">Paneelstructuur</span>
+      <div class="paneel-knoppen">
+        <button class="paneel-knop actief" data-profiel="hoog">Hoge profilering</button>
+        <button class="paneel-knop" data-profiel="laag">Lage profilering</button>
+        <button class="paneel-knop" data-profiel="glad">Glad</button>
+      </div>
+    </div>
+    <p class="optie-hint" id="kleurNaam">Antraciet (RAL 7016)</p>
+  </div>
+</div>

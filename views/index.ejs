@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <title>Garagedeur vervangen? Drutex D-GATE op maat | MaatwerkGaragedeur.nl</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-tekst">
+      <p class="kicker">Officiële Drutex-partner &middot; D-GATE sectionaaldeuren</p>
+      <h1>Je oude garagedeur er<span class="uit">uit</span>.<br>Een nieuwe er<span class="in">in</span>.<br><span class="accent-lijn">In één dag.</span></h1>
+      <p class="hero-sub">Wij vervangen je verouderde kanteldeur of versleten sectionaaldeur door een <strong>Drutex D-GATE</strong> sectionaaldeur op maat. Hoogwaardig geïsoleerd, veilig dankzij FingerSafe en verkrijgbaar in elke RAL-kleur — inclusief demontage en afvoer van je oude deur.</p>
+      <div class="hero-cta">
+        <a href="/offerte" class="btn btn-primair">Vrijblijvende offerte</a>
+        <a href="/modellen" class="btn btn-ghost">Bekijk de modellen</a>
+      </div>
+      <ul class="hero-usps">
+        <li>Montage in ca. 1 dag</li>
+        <li>Paneel 40 of 60&nbsp;mm geïsoleerd</li>
+        <li>Oude deur gratis afgevoerd</li>
+      </ul>
+    </div>
+    <div class="hero-deur">
+      <%- include('partials/deur-svg') %>
+    </div>
+  </div>
+</section>
+
+<!-- WAAROM VERVANGEN -->
+<section class="sectie sectie-donker">
+  <div class="wrap">
+    <h2 class="sectie-titel">Waarom nu je garagedeur vervangen?</h2>
+    <div class="kaart-grid">
+      <article class="kaart">
+        <span class="kaart-nr">01</span>
+        <h3>Stop de warmtelek</h3>
+        <p>Oude kanteldeuren zijn ongeïsoleerd. Een D-GATE paneel van 40 of 60&nbsp;mm met hoge thermische isolatie houdt de kou buiten — merkbaar in je garage én op je energierekening.</p>
+      </article>
+      <article class="kaart">
+        <span class="kaart-nr">02</span>
+        <h3>Veilig voor het hele gezin</h3>
+        <p>FingerSafe-panelen voorkomen beknelde vingers, dubbele kabels en veerbreukbeveiliging voorkomen ongelukken. De deur voldoet aan de Europese veiligheidsnormen.</p>
+      </article>
+      <article class="kaart">
+        <span class="kaart-nr">03</span>
+        <h3>Ruimte op je oprit</h3>
+        <p>Een sectionaaldeur schuift verticaal omhoog langs het plafond. Geen uitzwaaiende kanteldeur meer — je kunt tot vlak voor de deur parkeren.</p>
+      </article>
+      <article class="kaart">
+        <span class="kaart-nr">04</span>
+        <h3>Bedien 'm vanaf de bank</h3>
+        <p>Kies elektrische bediening met motoren van Somfy, Sommer, Beninca, Came of AVO — met handzender of gekoppeld aan je smart home.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- MODELLEN -->
+<section class="sectie" id="modellen">
+  <div class="wrap">
+    <div class="sectie-kop">
+      <h2 class="sectie-titel">Drie D-GATE uitvoeringen.<br>Eén past altijd.</h2>
+      <p>Elke Drutex D-GATE wordt op maat gemaakt voor jouw garageopening. Het verschil zit in het veersysteem — wij adviseren tijdens de gratis inmeting welke uitvoering het beste past.</p>
+    </div>
+    <div class="model-grid">
+      <% modellen.forEach(m => { %>
+        <article class="model-kaart">
+          <div class="model-kop">
+            <h3><%= m.naam %></h3>
+            <span class="model-sub"><%= m.sub %></span>
+          </div>
+          <p><%= m.kort %></p>
+          <ul>
+            <% m.punten.forEach(p => { %><li><%= p %></li><% }) %>
+          </ul>
+        </article>
+      <% }) %>
+    </div>
+    <div class="sectie-cta">
+      <a href="/modellen" class="btn btn-secundair">Alle specificaties bekijken</a>
+    </div>
+  </div>
+</section>
+
+<!-- KLEUREN TEASER -->
+<section class="sectie sectie-band">
+  <div class="wrap band-grid">
+    <div>
+      <h2 class="sectie-titel">Elke kleur.<br>Elke structuur.</h2>
+      <p>Van tijdloos antraciet RAL&nbsp;7016 tot warme houtlook zoals Golden Oak of Winchester. Panelen in gladde of Woodgrain-structuur, zonder profilering of met lage of hoge profilering. Optioneel met beglazing in PVC- of RVS-look kader.</p>
+      <a href="/kleuren" class="btn btn-primair">Bekijk alle kleuren</a>
+    </div>
+    <div class="band-swatches">
+      <% kleuren.slice(0, 18).forEach(k => { %>
+        <span class="band-swatch" style="--c: <%= k.hex %>" title="<%= k.naam %>"></span>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- WERKWIJZE -->
+<section class="sectie sectie-donker" id="werkwijze">
+  <div class="wrap">
+    <h2 class="sectie-titel">Zo werkt het</h2>
+    <ol class="stappen">
+      <li>
+        <h3>Offerte aanvragen</h3>
+        <p>Vul in 2 minuten het formulier in met je afmetingen (bij benadering). Binnen 1 werkdag ontvang je een vrijblijvende prijsopgave.</p>
+      </li>
+      <li>
+        <h3>Gratis inmeting</h3>
+        <p>Akkoord met de richtprijs? Dan komen we langs om exact in te meten en de uitvoering, kleur en bediening definitief te maken.</p>
+      </li>
+      <li>
+        <h3>Productie op maat</h3>
+        <p>Je deur wordt bij Drutex op maat geproduceerd — met fabrieksmatig voorgespannen veren voor een snelle, veilige montage.</p>
+      </li>
+      <li>
+        <h3>Montage in één dag</h3>
+        <p>Oude deur eruit, nieuwe D-GATE erin. Dankzij de OneTool-montagetechniek meestal binnen één dag klaar, inclusief afvoer van je oude deur.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sectie sectie-cta-blok">
+  <div class="wrap cta-blok">
+    <h2>Klaar voor een nieuwe garagedeur?</h2>
+    <p>Vraag vandaag nog een vrijblijvende offerte aan. Binnen 1 werkdag reactie, gratis inmeting, 2 jaar garantie met verlengingsmogelijkheid.</p>
+    <a href="/offerte" class="btn btn-primair btn-groot">Start je offerteaanvraag</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>
