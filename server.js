@@ -5,7 +5,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.0.0'; // cache-busting ?v=
+const SITE_VERSION = '1.2.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -36,13 +36,15 @@ const modellen = [
     slug: 'd-gate-u',
     naam: 'D-GATE U',
     sub: 'Torsieveer vóór',
-    kort: 'De allrounder. Torsieveer aan de voorzijde, geschikt voor panelen tot 250 kg. Robuust, betrouwbaar en geschikt voor vrijwel elke garage.',
+    kort: 'De allrounder. Torsieveer aan de voorzijde, geschikt voor panelen tot 250 kg. Robuust, betrouwbaar en als enige leverbaar met het extra dikke 60 mm paneel.',
     punten: [
       'Torsieveer aan de voorzijde gemonteerd',
       'Draagt panelen tot 250 kg',
-      'Zeer duurzame, solide constructie',
-      'Geschikt voor renovatie én nieuwbouw'
-    ]
+      'Enige model met 60 mm paneel',
+      'Grootste maten: tot 6000 × 3500 mm'
+    ],
+    specs: { gewicht: '250 kg', breedte: '6000 mm', hoogte: '3500 mm*', latei: '200/200 mm', veer: 'Torsieveer aan de voorzijde' },
+    voetnoot: '* Verzinkte geleiderails en niet-voorgespannen veren bij deuren van 3,0–3,5 m breed.'
   },
   {
     slug: 'd-gate-b',
@@ -52,21 +54,23 @@ const modellen = [
     punten: [
       'Torsieveer aan de achterzijde',
       'Soepel en stil in gebruik',
-      'Ideaal bij beperkte inbouwhoogte',
+      'Lage latei: al vanaf 90/120 mm',
       'Past bij modern én klassiek bouwen'
-    ]
+    ],
+    specs: { gewicht: '250 kg', breedte: '6000 mm', hoogte: '3000 mm', latei: '90/120 mm', veer: 'Torsieveer aan de achterzijde' }
   },
   {
     slug: 'd-gate-t',
     naam: 'D-GATE T',
     sub: 'Trekveren',
-    kort: 'De slimme instapper. Trekveren aan beide zijden verdelen de krachten gelijkmatig — eenvoudig, betrouwbaar en scherp geprijsd.',
+    kort: 'De slimme instapper. Trekveren verticaal in het kozijn verdelen de krachten gelijkmatig — eenvoudig, betrouwbaar en scherp geprijsd.',
     punten: [
-      'Trekveren aan beide zijden',
+      'Trekveren verticaal in het kozijn',
       'Gelijkmatige krachtverdeling',
-      'Eenvoudige, bewezen constructie',
+      'Lage latei: al vanaf 90/120 mm',
       'Meest voordelige uitvoering'
-    ]
+    ],
+    specs: { gewicht: '130 kg', breedte: '4500 mm', hoogte: '2500 mm', latei: '90/120 mm', veer: 'Trekveren' }
   }
 ];
 

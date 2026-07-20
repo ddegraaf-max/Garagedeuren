@@ -278,6 +278,21 @@ a { color: inherit; }
   content: '✓'; position: absolute; left: 0; color: var(--accent-diep); font-weight: 800;
 }
 
+/* productvideo */
+.sectie-video { padding-top: 4.5rem; }
+.video-kader {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--schaduw);
+  border: 1px solid var(--lijn);
+  background: var(--antraciet-diep);
+}
+.video-kader video { display: block; width: 100%; height: auto; }
+.video-bron {
+  font-size: 0.78rem; color: rgba(244, 241, 234, 0.55);
+  padding: 0.5rem 1rem; text-align: right;
+}
+
 /* kleuren band */
 .sectie-band { background: var(--papier-donker); }
 .band-grid {
@@ -358,6 +373,17 @@ a { color: inherit; }
 .model-detail h2 { font-size: 1.9rem; margin: 0.3rem 0 0.2rem; }
 .model-detail p { color: var(--inkt-zacht); margin: 0.9rem 0 1.1rem; max-width: 68ch; }
 .model-detail .vinkjes { list-style: none; margin-bottom: 1.4rem; }
+.spec-tabel {
+  border-collapse: collapse; width: 100%; max-width: 460px;
+  margin: 0 0 1.2rem; font-size: 0.93rem;
+}
+.spec-tabel th, .spec-tabel td {
+  text-align: left; padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--lijn);
+}
+.spec-tabel th { font-weight: 600; color: var(--inkt-zacht); width: 55%; }
+.spec-tabel td { font-weight: 600; }
+.spec-voetnoot { font-size: 0.8rem; color: var(--inkt-zacht); margin-bottom: 1.2rem; }
 
 .spec-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

@@ -28,6 +28,14 @@
             <ul class="vinkjes">
               <% m.punten.forEach(p => { %><li><%= p %></li><% }) %>
             </ul>
+            <table class="spec-tabel">
+              <tr><th>Max. paneelgewicht</th><td><%= m.specs.gewicht %></td></tr>
+              <tr><th>Max. breedte</th><td><%= m.specs.breedte %></td></tr>
+              <tr><th>Max. hoogte</th><td><%= m.specs.hoogte %></td></tr>
+              <tr><th>Min. latei</th><td><%= m.specs.latei %></td></tr>
+              <tr><th>Veersysteem</th><td><%= m.specs.veer %></td></tr>
+            </table>
+            <% if (m.voetnoot) { %><p class="spec-voetnoot"><%= m.voetnoot %></p><% } %>
             <a href="/offerte?model=<%= m.naam %>" class="btn btn-secundair">Offerte voor <%= m.naam %></a>
           </div>
         </article>
@@ -42,27 +50,27 @@
     <div class="spec-grid">
       <div class="spec">
         <h3>Panelen</h3>
-        <p>40 of 60&nbsp;mm dik, glad of Woodgrain-structuur. Zonder profilering, met lage of met hoge profilering. FingerSafe-veiligheidsprofiel standaard.</p>
+        <p>40 mm dik (60 mm alleen bij D-GATE U), structuur glad, Woodgrain of Deep Mat. Zonder profilering (F), met lage (L) of hoge (V) profilering. FingerSafe-veiligheidsprofiel standaard.</p>
       </div>
       <div class="spec">
         <h3>Kleuren</h3>
-        <p>Gelakt volgens de volledige RAL-kleurenwaaier, plus houtdecoren zoals Golden Oak, Winchester en Turner Oak.</p>
+        <p>Standaard: RAL 9005, 9016, 7016 en Deep Mat-uitvoeringen. Daarnaast lakken volgens de volledige RAL-waaier en houtdecoren zoals Golden Oak, Noten, Turner Oak en Antraciet Ulti-Matt.</p>
       </div>
       <div class="spec">
         <h3>Beglazing</h3>
-        <p>Optionele raamsecties met PVC- of INOX-kader en acrylglas — voor daglicht in de garage.</p>
+        <p>Optionele raamsecties met dubbel acrylglas in PVC- of INOX-kader — voor daglicht in de garage.</p>
       </div>
       <div class="spec">
         <h3>Geleiders</h3>
-        <p>Rails en kozijnen in verzinkt staal, zwart/zwart of wit/zwart.</p>
+        <p>Rails en kozijnen in drie kleurcombinaties: verzinkt/zink, zwart/zwart of zwart/wit.</p>
       </div>
       <div class="spec">
         <h3>Aandrijving</h3>
-        <p>Handbediend of elektrisch met motoren van Somfy, Beninca, Sommer, Came of AVO. Koppelbaar aan smart-home-systemen.</p>
+        <p>Handbediend of elektrisch met motoren van Somfy, Beninca, Sommer Base+, Came Home of AVO. Accessoires: handzenders, codeklavier, fotocellen, signaallamp, noodaccu (5–10 cycli bij stroomuitval) en TaHoma&reg; smart-home-koppeling.</p>
       </div>
       <div class="spec">
         <h3>Veiligheid &amp; garantie</h3>
-        <p>Dubbel kabelsysteem, veerbreukbeveiliging, SafeEdge-rails zonder scherpe randen. Veren berekend op 15.000–25.000 cycli. 2 jaar garantie, verlengbaar.</p>
+        <p>Solide constructie, FingerSafe-panelen, fotocellen die de deur direct stoppen bij een obstakel. Fabrieksklare veren (geschroefd of gespannen), OneTool-montage in 30–45 min. 2 jaar garantie, verlengbaar.</p>
       </div>
     </div>
   </div>
