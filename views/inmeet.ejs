@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <title>AI inmeet-assistent — meet je garagedeur op met een foto | MaatwerkGaragedeur.nl</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<section class="sectie pagina-kop">
+  <div class="wrap">
+    <p class="kicker">Gratis &middot; direct resultaat</p>
+    <h1>AI inmeet-assistent</h1>
+    <p class="pagina-intro">Upload een foto van je huidige garagedeur of garageopening. Onze AI-assistent herkent het deurtype, geeft je stap-voor-stap meetinstructies en adviseert welk D-GATE model waarschijnlijk past. De definitieve inmeting doet onze monteur altijd gratis bij je thuis.</p>
+  </div>
+</section>
+
+<section class="sectie">
+  <div class="wrap inmeet-wrap">
+    <div class="inmeet-upload" id="uploadBlok">
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp" hidden>
+        <svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">
+          <rect x="6" y="12" width="36" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <circle cx="18" cy="24" r="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M12 36 L22 27 L30 34 L36 29 L42 34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M31 12 L33 7 L39 7 L41 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <strong>Sleep je foto hierheen of klik om te kiezen</strong>
+        <span>Maak de foto recht van voren, met de hele deur én wat muur eromheen in beeld. JPG, PNG of WebP, max 8 MB.</span>
+      </label>
+      <img id="preview" class="inmeet-preview" alt="Voorbeeld van je foto" hidden>
+      <label class="inmeet-toelichting">Toelichting (optioneel)
+        <input type="text" id="toelichting" maxlength="300" placeholder="Bijv. de deur klemt, of: ik wil elektrische bediening">
+      </label>
+      <button class="btn btn-primair btn-groot" id="analyseerBtn" disabled>Analyseer mijn garagedeur</button>
+      <p class="form-klein">Je foto wordt alleen gebruikt voor deze analyse en niet opgeslagen.</p>
+    </div>
+
+    <div class="inmeet-status" id="statusBlok" hidden>
+      <div class="laadbalk"><span></span></div>
+      <p>De assistent bekijkt je foto…</p>
+    </div>
+
+    <div class="inmeet-resultaat" id="resultaatBlok" hidden>
+      <div class="res-kaart">
+        <h2>Wat we zien</h2>
+        <p class="res-deurtype" id="resDeurtype"></p>
+        <ul id="resObservaties" class="vinkjes"></ul>
+      </div>
+      <div class="res-kaart">
+        <h2>Zo meet je op</h2>
+        <ol id="resInstructies" class="meet-stappen"></ol>
+      </div>
+      <div class="res-kaart res-advies">
+        <h2>Modeladvies</h2>
+        <p id="resAdvies"></p>
+        <ul id="resAandacht" class="aandacht-lijst"></ul>
+        <a href="/offerte" class="btn btn-primair" id="resOfferteLink">Vraag offerte aan met deze maten</a>
+      </div>
+      <button class="btn btn-ghost" id="opnieuwBtn">Andere foto proberen</button>
+    </div>
+
+    <div class="melding melding-fout" id="foutBlok" hidden><p id="foutTekst"></p></div>
+  </div>
+</section>
+
+<section class="sectie sectie-donker">
+  <div class="wrap">
+    <h2 class="sectie-titel">Hoe werkt het?</h2>
+    <ol class="stappen">
+      <li><h3>Foto maken</h3><p>Fotografeer je garagedeur recht van voren, bij daglicht, met de hele opening in beeld.</p></li>
+      <li><h3>AI-analyse</h3><p>De assistent herkent het deurtype, de latei en mogelijke obstakels, en geeft meetinstructies op maat.</p></li>
+      <li><h3>Zelf opmeten</h3><p>Volg de stappen met een rolmaat — op de centimeter nauwkeurig hoeft niet voor de offerte.</p></li>
+      <li><h3>Offerte &amp; inmeting</h3><p>Vul de maten in bij je offerteaanvraag. Bij akkoord meet onze monteur gratis exact in.</p></li>
+    </ol>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/inmeet.js?v=<%= v %>"></script>
+</body>
+</html>

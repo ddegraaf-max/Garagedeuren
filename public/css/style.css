@@ -451,6 +451,68 @@ a { color: inherit; }
 .tekst-pagina h2 { font-size: 1.3rem; margin: 1.8rem 0 0.6rem; }
 .tekst-pagina p { color: var(--inkt-zacht); margin-bottom: 0.8rem; }
 
+/* ---------- inmeet-assistent ---------- */
+.inmeet-wrap { max-width: 760px; }
+.dropzone {
+  display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+  text-align: center; cursor: pointer;
+  border: 2.5px dashed var(--lijn); border-radius: var(--radius);
+  background: var(--wit); padding: 2.6rem 1.6rem;
+  color: var(--inkt-zacht); transition: border-color 0.15s, background 0.15s;
+}
+.dropzone:hover, .dropzone.sleep { border-color: var(--accent-diep); background: rgba(242, 163, 60, 0.06); }
+.dropzone svg { color: var(--accent-diep); }
+.dropzone strong { color: var(--inkt); font-size: 1.05rem; }
+.dropzone span { font-size: 0.88rem; max-width: 46ch; }
+.inmeet-preview {
+  display: block; width: 100%; max-height: 380px; object-fit: contain;
+  margin-top: 1.2rem; border-radius: var(--radius);
+  border: 1px solid var(--lijn); background: var(--wit);
+}
+.inmeet-toelichting {
+  display: block; font-weight: 600; font-size: 0.9rem; margin: 1.2rem 0;
+}
+.inmeet-toelichting input {
+  display: block; width: 100%; margin-top: 0.35rem;
+  padding: 0.7rem 0.9rem; font-size: 1rem;
+  font-family: 'Instrument Sans', sans-serif;
+  border: 1.5px solid var(--lijn); border-radius: 10px;
+  background: var(--wit);
+}
+.inmeet-status { text-align: center; padding: 3rem 0; color: var(--inkt-zacht); }
+.laadbalk {
+  width: 220px; height: 6px; border-radius: 3px;
+  background: var(--papier-donker); margin: 0 auto 1rem; overflow: hidden;
+}
+.laadbalk span {
+  display: block; width: 40%; height: 100%; border-radius: 3px;
+  background: var(--accent); animation: schuif 1.1s ease-in-out infinite alternate;
+}
+@keyframes schuif { from { transform: translateX(-30%); } to { transform: translateX(180%); } }
+.inmeet-resultaat { display: grid; gap: 1.2rem; }
+.res-kaart {
+  background: var(--wit); border: 1px solid var(--lijn);
+  border-radius: var(--radius); padding: 1.7rem 1.6rem;
+}
+.res-kaart h2 { font-size: 1.3rem; margin-bottom: 0.7rem; }
+.res-deurtype { font-weight: 600; margin-bottom: 0.8rem; }
+.res-kaart .vinkjes { list-style: none; }
+.meet-stappen { padding-left: 1.3rem; }
+.meet-stappen li { margin-bottom: 0.55rem; }
+.meet-stappen li::marker { font-weight: 800; color: var(--accent-diep); }
+.res-advies { border-left: 6px solid var(--accent); }
+.res-advies p { margin-bottom: 0.9rem; }
+.aandacht-lijst { list-style: none; margin-bottom: 1.2rem; }
+.aandacht-lijst li {
+  position: relative; padding-left: 1.5rem; margin-bottom: 0.45rem; font-size: 0.95rem;
+}
+.aandacht-lijst li::before {
+  content: '!'; position: absolute; left: 0.3rem;
+  color: var(--accent-diep); font-weight: 800;
+}
+.aandacht-lijst:empty { display: none; }
+#opnieuwBtn { justify-self: start; }
+
 /* ---------- footer ---------- */
 .site-footer { background: var(--antraciet-diep); color: rgba(244, 241, 234, 0.8); margin-top: 2rem; }
 .footer-grid {
@@ -500,3 +562,6 @@ a { color: inherit; }
   .sectie { padding: 3.2rem 0; }
   .band-swatches { grid-template-columns: repeat(5, 1fr); }
 }
+
+/* teaser inmeet-assistent */
+.teaser-visual svg { width: 100%; height: auto; display: block; }

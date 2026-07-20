@@ -13,6 +13,7 @@ Draait op http://localhost:3000
 | Variabele | Verplicht | Uitleg |
 |---|---|---|
 | `RESEND_API_KEY` | nee | Zonder key worden offertes alleen naar de console gelogd |
+| `ANTHROPIC_API_KEY` | voor AI | Vereist voor de AI inmeet-assistent (foto-analyse) |
 | `OFFERTE_TO` | nee | Ontvangstadres offertes (default: info@maatwerkgaragedeur.nl) |
 | `OFFERTE_FROM` | nee | Afzender (Resend geverifieerd domein vereist) |
 
