@@ -200,6 +200,31 @@
     if (gekozenProfiel) zetProfiel(gekozenProfiel.closest('.profiel-knop').dataset.profiel);
   }
 
+  // Productvideo: het autoplay-attribuut doet het werk, dit is er bovenop.
+  // Valt dit script uit, dan speelt de video gewoon nog steeds.
+  var video = document.getElementById('productVideo');
+  if (video) {
+    var rustig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (rustig) {
+      // bezoeker heeft in het systeem aangegeven bewegende beelden te willen beperken
+      video.removeAttribute('autoplay');
+      video.pause();
+    } else if ('IntersectionObserver' in window) {
+      // buiten beeld pauzeren: scheelt data en cpu, en de deur staat weer klaar
+      // op het moment dat je hem echt ziet
+      new IntersectionObserver(function (waarnemingen) {
+        waarnemingen.forEach(function (w) {
+          if (w.isIntersecting) {
+            var poging = video.play();
+            if (poging && poging.catch) poging.catch(function () { /* browser blokkeert autoplay */ });
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.25 }).observe(video);
+    }
+  }
+
   // Model prefill via ?model= op de offertepagina (link vanaf /modellen).
   // De modelkeuze is een set radio's, geen select meer.
   var params = new URLSearchParams(window.location.search);

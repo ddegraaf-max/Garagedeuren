@@ -67,7 +67,10 @@
       <p>Bekijk hoe de sectionaaldeur opent, hoe de panelen zijn opgebouwd en hoe het FingerSafe-profiel werkt.</p>
     </div>
     <div class="video-kader">
-      <video controls muted playsinline preload="metadata" poster="">
+      <%# autoplay werkt alleen als de video gedempt is; playsinline voorkomt dat
+          iOS hem schermvullend opent. loop omdat een stille video die na één keer
+          stopt eruitziet alsof hij vastloopt. %>
+      <video id="productVideo" autoplay loop muted playsinline preload="metadata" controls>
         <source src="https://www.drutex.com/media/_upload/produkty/d-gate/produkt/d-gate-produkt-bez-okien.mp4" type="video/mp4">
         Je browser ondersteunt geen video. <a href="https://www.drutex.com/media/_upload/produkty/d-gate/produkt/d-gate-produkt-bez-okien.mp4">Bekijk de video hier</a>.
       </video>
