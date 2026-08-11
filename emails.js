@@ -42,6 +42,62 @@ function logoMerk(paneelKleur) {
     ${streep(KLEUR.accent)}${streep(paneelKleur)}${streep(paneelKleur)}</table>`;
 }
 
+// --- Schematische deur, opgebouwd uit tabelcellen ---
+// SVG rendert niet in Gmail/Outlook, dus tekenen we de deur met gekleurde rijen.
+// Toont alleen wat de klant écht heeft gekozen: kleur en profilering.
+function mengKleur(hex, doel, factor) {
+  const lees = (h) => {
+    const s = String(h).replace('#', '');
+    const vol = s.length === 3 ? s.split('').map(c => c + c).join('') : s;
+    return [0, 2, 4].map(i => parseInt(vol.slice(i, i + 2), 16));
+  };
+  const [r1, g1, b1] = lees(hex);
+  const [r2, g2, b2] = lees(doel);
+  const m = (a, b) => Math.round(a + (b - a) * factor).toString(16).padStart(2, '0');
+  return `#${m(r1, r2)}${m(g1, g2)}${m(b1, b2)}`;
+}
+
+function deurVisual(hex, profiel) {
+  const donker = mengKleur(hex, '#000000', 0.32);
+  const licht = mengKleur(hex, '#ffffff', 0.18);
+  const naad = mengKleur(hex, '#000000', 0.5);
+  const rij = (h, kleur) => `<tr><td height="${h}" bgcolor="${kleur}" style="height:${h}px;line-height:${h}px;font-size:0;">&nbsp;</td></tr>`;
+  const groef = () => rij(3, donker) + rij(2, licht);
+
+  let binnenkant;
+  if (profiel === 'laag') binnenkant = rij(21, hex) + groef() + rij(21, hex);
+  else if (profiel === 'glad') binnenkant = rij(47, hex);
+  else binnenkant = rij(11, hex) + groef() + rij(16, hex) + groef() + rij(11, hex);
+
+  const paneel = (i) => (i ? rij(2, naad) : '') + binnenkant;
+
+  return `
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="264" style="width:264px;">
+    <tr>
+      <td bgcolor="#2c3136" style="background-color:#2c3136;padding:7px;border-radius:5px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          ${paneel(0)}${paneel(1)}${paneel(2)}${paneel(3)}
+        </table>
+      </td>
+    </tr>
+    <tr><td height="6" bgcolor="#b9b2a4" style="height:6px;line-height:6px;font-size:0;border-radius:0 0 4px 4px;">&nbsp;</td></tr>
+  </table>`;
+}
+
+// Deurblok met bijschrift — alleen tonen als de klant echt een kleur koos
+function deurBlok(a, { compact = false } = {}) {
+  if (!a.kleurHex) return '';
+  const onder = [a.kleur, a.profilering].filter(heeft).join(' &middot; ');
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${KLEUR.papier}" style="background-color:${KLEUR.papier};border:1px solid ${KLEUR.lijn};border-radius:11px;margin:${compact ? '4px 0 6px' : '0 0 6px'};">
+    <tr><td align="center" style="padding:${compact ? '18px' : '22px'} 18px;">
+      ${deurVisual(a.kleurHex, a.profiel)}
+      <p style="margin:13px 0 0;font-family:${FONT};font-size:13px;line-height:20px;color:${KLEUR.inkt};font-weight:600;">${esc(onder)}</p>
+      <p style="margin:3px 0 0;font-family:${FONT};font-size:11px;line-height:17px;color:${KLEUR.inktZacht};">Schematische weergave van je keuze &mdash; geen foto van je eigen garage.</p>
+    </td></tr>
+  </table>`;
+}
+
 // Gekleurd bolletje naast een kleurnaam
 function kleurStip(hex) {
   if (!hex) return '';
@@ -226,10 +282,12 @@ function offerteIntern(a) {
     ])}
 
     ${sectieKop('Gewenste deur')}
+    ${deurBlok(a, { compact: true })}
     ${lijst([
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
+      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }]
     ])}
 
@@ -284,12 +342,15 @@ function offerteBevestiging(a) {
       ${stap(3, 'Montage in één dag', 'Wij leveren, monteren en voeren je oude deur netjes af.')}
     </table>
 
+    ${a.kleurHex ? sectieKop('Zo ziet je keuze eruit') + deurBlok(a) : ''}
+
     ${sectieKop('Dit gaf je door')}
     ${lijst([
       ['Postcode', a.postcode],
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
+      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }],
       ['Bediening', a.motor],
       ['Opmerkingen', a.opmerking]

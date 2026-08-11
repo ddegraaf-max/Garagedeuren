@@ -58,6 +58,41 @@
     });
   });
 
+  // Offertepagina: de keuzes in het formulier sturen de deur-preview aan.
+  // De .kleur-tegel- en .paneel-knop-listeners hierboven doen het tekenwerk al;
+  // hier zetten we alleen de beginstand en de "weet ik nog niet"-optie.
+  var offerteForm = document.querySelector('.offerte-form');
+  if (offerteForm && document.getElementById('deurSvg')) {
+    var STANDAARDKLEUR = '#383e42'; // Antraciet (RAL 7016)
+
+    var geenVoorkeur = offerteForm.querySelector('.kleur-geen input');
+    if (geenVoorkeur) {
+      geenVoorkeur.addEventListener('change', function () {
+        if (!geenVoorkeur.checked) return;
+        document.querySelectorAll('.kleur-tegel').forEach(function (x) { x.classList.remove('actief'); });
+        zetKleur(STANDAARDKLEUR, null);
+      });
+    }
+
+    // Beginstand herstellen — nodig als het formulier na een fout opnieuw wordt getoond
+    var gekozenTegel = offerteForm.querySelector('.kleur-tegel input:checked');
+    if (gekozenTegel) {
+      var tegel = gekozenTegel.closest('.kleur-tegel');
+      tegel.classList.add('actief');
+      zetKleur(tegel.dataset.hex, tegel.dataset.naam);
+    }
+    var gekozenProfiel = offerteForm.querySelector('.paneel-knop input:checked');
+    if (gekozenProfiel) {
+      var profiel = gekozenProfiel.closest('.paneel-knop').dataset.profiel;
+      document.querySelectorAll('.profiel-hoog').forEach(function (g) {
+        g.style.display = profiel === 'hoog' ? '' : 'none';
+      });
+      document.querySelectorAll('.profiel-laag').forEach(function (g) {
+        g.style.display = profiel === 'laag' ? '' : 'none';
+      });
+    }
+  }
+
   // Model prefill via ?model= op offertepagina
   var params = new URLSearchParams(window.location.search);
   var model = params.get('model');

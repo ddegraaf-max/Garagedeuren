@@ -57,6 +57,44 @@
           </div>
         </fieldset>
 
+        <fieldset class="kleur-veld">
+          <legend>Kleur &amp; profilering <span class="optioneel">(optioneel — je ziet het direct)</span></legend>
+
+          <div class="offerte-preview">
+            <%- include('partials/deur-svg', { metOpties: false }) %>
+            <p class="preview-hint">Indicatieve weergave. Tijdens de gratis inmeting laten we echte kleurstalen zien.</p>
+          </div>
+
+          <span class="optie-label">Profilering van de panelen</span>
+          <div class="paneel-keuzes">
+            <% profileringen.forEach((p, i) => {
+                 const aan = v.profilering ? v.profilering === p.naam : i === 0; %>
+              <label class="paneel-knop<%= aan ? ' actief' : '' %>" data-profiel="<%= p.profiel %>">
+                <input type="radio" name="profilering" value="<%= p.naam %>"<%= aan ? ' checked' : '' %>>
+                <span><%= p.naam %></span>
+              </label>
+            <% }) %>
+          </div>
+
+          <span class="optie-label">Kleur</span>
+          <label class="kleur-geen">
+            <input type="radio" name="kleur" value=""<%= v.kleur ? '' : ' checked' %>>
+            <span>Weet ik nog niet — advies gewenst</span>
+          </label>
+          <% [['klassiek','Wit &amp; crème'],['grijs','Grijs &amp; zwart'],['hout','Houtdecoren'],['kleur','Kleuraccenten']].forEach(([cat, kopje]) => { %>
+            <h3 class="kleur-cat"><%- kopje %></h3>
+            <div class="kleur-rooster">
+              <% kleuren.filter(k => k.cat === cat).forEach(k => { %>
+                <label class="kleur-tegel" style="--c: <%= k.hex %>" data-hex="<%= k.hex %>" data-naam="<%= k.naam %>">
+                  <input type="radio" name="kleur" value="<%= k.naam %>"<%= v.kleur === k.naam ? ' checked' : '' %>>
+                  <span class="kleur-vlak"></span>
+                  <span class="kleur-naam"><%= k.naam %></span>
+                </label>
+              <% }) %>
+            </div>
+          <% }) %>
+        </fieldset>
+
         <fieldset>
           <legend>Je voorkeuren <span class="optioneel">(optioneel — wij adviseren graag)</span></legend>
           <div class="veld-rij">
@@ -68,7 +106,7 @@
                 <option<%= keuze('model', 'D-GATE T (trekveren)') %>>D-GATE T (trekveren)</option>
               </select>
             </label>
-            <label>Paneel
+            <label>Paneeldikte &amp; afwerking
               <select name="paneel">
                 <option value="">Weet ik nog niet</option>
                 <option<%= keuze('paneel', '40 mm — glad') %>>40 mm — glad</option>
@@ -79,19 +117,14 @@
               </select>
             </label>
           </div>
-          <div class="veld-rij">
-            <label>Kleur
-              <input type="text" name="kleur" placeholder="bijv. Antraciet RAL 7016 of Golden Oak" value="<%= v.kleur || '' %>">
-            </label>
-            <label>Bediening
-              <select name="motor">
-                <option value="">Weet ik nog niet</option>
-                <option<%= keuze('motor', 'Handbediend') %>>Handbediend</option>
-                <option<%= keuze('motor', 'Elektrisch met handzender') %>>Elektrisch met handzender</option>
-                <option<%= keuze('motor', 'Elektrisch + smart home') %>>Elektrisch + smart home</option>
-              </select>
-            </label>
-          </div>
+          <label>Bediening
+            <select name="motor">
+              <option value="">Weet ik nog niet</option>
+              <option<%= keuze('motor', 'Handbediend') %>>Handbediend</option>
+              <option<%= keuze('motor', 'Elektrisch met handzender') %>>Elektrisch met handzender</option>
+              <option<%= keuze('motor', 'Elektrisch + smart home') %>>Elektrisch + smart home</option>
+            </select>
+          </label>
           <label>Opmerkingen
             <textarea name="opmerking" rows="4" placeholder="Bijv. huidige deur is een kanteldeur, beperkte ruimte boven de opening, gewenste beglazing…"><%= v.opmerking || '' %></textarea>
           </label>

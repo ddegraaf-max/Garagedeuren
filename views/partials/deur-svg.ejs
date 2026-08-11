@@ -1,3 +1,5 @@
+<%# metOpties=false toont alleen de deur; de offertepagina stuurt hem met de formuliervelden aan %>
+<% const toonOpties = typeof metOpties === 'undefined' ? true : metOpties; %>
 <div class="deur-visual">
   <svg id="deurSvg" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voorbeeld garagedeur">
     <!-- gevel -->
@@ -40,6 +42,7 @@
     <rect x="0" y="380" width="560" height="40" fill="#b9b2a4"/>
     <rect x="0" y="380" width="560" height="4" fill="#9c9587"/>
   </svg>
+  <% if (toonOpties) { %>
   <div class="deur-opties">
     <div class="optie-groep">
       <span class="optie-label">Kleur</span>
@@ -60,4 +63,5 @@
     </div>
     <p class="optie-hint" id="kleurNaam">Antraciet (RAL 7016)</p>
   </div>
+  <% } %>
 </div>

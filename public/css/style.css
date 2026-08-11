@@ -443,6 +443,81 @@ a { color: inherit; }
 }
 .form-klein { font-size: 0.85rem; color: var(--inkt-zacht); margin-top: 1rem; }
 
+/* ---------- kleur- en profileringkeuze in het offerteformulier ---------- */
+.offerte-preview { margin-bottom: 1.4rem; }
+.offerte-preview .deur-visual svg {
+  width: 100%; height: auto; display: block;
+  border-radius: 10px; border: 1px solid var(--lijn);
+}
+.preview-hint {
+  font-size: 0.8rem; color: var(--inkt-zacht);
+  margin-top: 0.5rem; text-align: center;
+}
+.kleur-veld .optie-label {
+  display: block; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--inkt-zacht); margin: 0 0 0.6rem;
+}
+.kleur-veld .kleur-cat {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--inkt-zacht);
+  margin: 1.1rem 0 0.55rem;
+}
+.kleur-veld .kleur-rooster { grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 0.55rem; }
+
+/* de radio zelf verbergen; het gekleurde vlak is de knop */
+.offerte-form .kleur-tegel {
+  position: relative; display: block; margin-bottom: 0;
+  font-weight: 400; font-size: 1rem;
+}
+.offerte-form .kleur-tegel input,
+.offerte-form .paneel-knop input {
+  position: absolute; opacity: 0; width: 1px; height: 1px;
+  margin: 0; padding: 0; display: block; pointer-events: none;
+}
+.kleur-veld .kleur-vlak { height: 42px; margin-bottom: 0.35rem; }
+.offerte-form .kleur-tegel input:checked ~ .kleur-vlak {
+  box-shadow: inset 0 0 0 2px var(--wit), 0 0 0 2.5px var(--accent-diep);
+}
+.offerte-form .kleur-tegel input:checked ~ .kleur-naam { color: var(--accent-diep); font-weight: 700; }
+.offerte-form .kleur-tegel:has(input:checked) { border-color: var(--accent-diep); background: var(--papier); }
+.offerte-form .kleur-tegel input:focus-visible ~ .kleur-vlak { outline: 2px solid var(--inkt); outline-offset: 2px; }
+
+/* "weet ik nog niet" */
+.offerte-form .kleur-geen {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 0.9rem; margin-bottom: 0.4rem;
+  border: 1.5px solid var(--lijn); border-radius: 10px;
+  background: var(--wit); cursor: pointer; font-size: 0.9rem;
+}
+.offerte-form .kleur-geen input {
+  position: static; opacity: 1; width: auto; height: auto;
+  margin: 0; display: inline-block; pointer-events: auto;
+  accent-color: var(--accent-diep);
+}
+.offerte-form .kleur-geen:has(input:checked) { border-color: var(--accent-diep); background: var(--papier); }
+
+/* profileringkeuze */
+.paneel-keuzes { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1.4rem; }
+.offerte-form .paneel-knop {
+  position: relative; display: inline-block; margin-bottom: 0;
+  padding: 0.6rem 1.1rem; border: 1.5px solid var(--lijn); border-radius: 999px;
+  background: var(--wit); cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; color: var(--inkt); transition: 0.15s;
+}
+.offerte-form .paneel-knop:hover { border-color: var(--accent-diep); }
+.offerte-form .paneel-knop:has(input:checked),
+.offerte-form .paneel-knop.actief {
+  border-color: var(--accent-diep); background: var(--accent); color: var(--antraciet);
+}
+.offerte-form .paneel-knop input:focus-visible ~ span { outline: 2px solid var(--inkt); outline-offset: 3px; }
+
+@media (max-width: 620px) {
+  .kleur-veld .kleur-rooster { grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); }
+  .kleur-veld .kleur-vlak { height: 34px; }
+}
+
 /* anti-bot rekensom */
 .som-veld { border-color: var(--accent) !important; }
 .som-uitleg { font-size: 0.88rem; color: var(--inkt-zacht); margin-bottom: 0.9rem; }

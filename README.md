@@ -20,6 +20,10 @@ Draait op http://localhost:3000
 | `SITE_URL` | nee | Basis-URL in e-maillinks (default: https://maatwerkgaragedeur.nl) |
 
 ## Offerteformulier
+- **Kleur & profilering**: de klant kiest uit de vaste `kleuren`-lijst en `PROFILERINGEN`
+  (beide in server.js). De SVG-deur uit `views/partials/deur-svg.ejs` staat boven de keuzes
+  en werkt live mee. Server-side wordt gecontroleerd dat de waarde uit die lijsten komt;
+  iets anders wordt genegeerd (leeg gemaakt), niet geweigerd.
 - **Anti-bot**: verborgen honeypot-veld + een rekensom (`3 + 5`) die HMAC-ondertekend
   in het formulier zit — geen sessie of database nodig, geldig voor 2 uur.
 - **Rate limiting**: max 5 aanvragen per IP per uur; herhaald misbruik levert een dagblokkade op.

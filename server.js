@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.5.0'; // cache-busting ?v=
+const SITE_VERSION = '1.6.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -231,6 +231,14 @@ function zoekKleurHex(tekst) {
   return deel.length ? deel[0].hex : null;
 }
 
+// Paneelprofilering — één bron voor het formulier, de validatie en de e-mail.
+// `profiel` stuurt de SVG-preview aan (zie public/js/main.js).
+const PROFILERINGEN = [
+  { naam: 'Hoge profilering', profiel: 'hoog' },
+  { naam: 'Lage profilering', profiel: 'laag' },
+  { naam: 'Glad (geen profilering)', profiel: 'glad' }
+];
+
 // ---------- Routes ----------
 app.get('/', (req, res) => res.render('index', { modellen, kleuren, page: 'home' }));
 app.get('/modellen', (req, res) => res.render('modellen', { modellen, page: 'modellen' }));
@@ -238,7 +246,8 @@ app.get('/kleuren', (req, res) => res.render('kleuren', { kleuren, page: 'kleure
 // Toont het formulier opnieuw met een verse rekensom en de al ingevulde waarden
 function toonFormulier(res, { status = 200, fout = null, waarden = {} } = {}) {
   res.status(status).render('offerte', {
-    page: 'offerte', verzonden: false, fout, waarden, som: maakSom()
+    page: 'offerte', verzonden: false, fout, waarden,
+    kleuren, profileringen: PROFILERINGEN, som: maakSom()
   });
 }
 
@@ -327,6 +336,8 @@ app.post('/offerte', async (req, res) => {
   const d = req.body;
 
   const nette = (x) => String(x || '').trim().slice(0, 500);
+  // Kleur en profilering komen uit een vaste keuzelijst; alles daarbuiten negeren we.
+  const uitLijst = (waarde, toegestaan) => (toegestaan.includes(waarde) ? waarde : '');
   const aanvraag = {
     naam: nette(d.naam),
     email: nette(d.email),
@@ -336,7 +347,8 @@ app.post('/offerte', async (req, res) => {
     hoogte: nette(d.hoogte),
     model: nette(d.model),
     paneel: nette(d.paneel),
-    kleur: nette(d.kleur),
+    kleur: uitLijst(nette(d.kleur), kleuren.map(k => k.naam)),
+    profilering: uitLijst(nette(d.profilering), PROFILERINGEN.map(p => p.naam)),
     motor: nette(d.motor),
     opmerking: nette(d.opmerking)
   };
@@ -380,14 +392,19 @@ app.post('/offerte', async (req, res) => {
 
   s.offerte.push(Date.now());
 
-  const kleurHex = zoekKleurHex(aanvraag.kleur);
-  const intern = offerteIntern({
+  // Extra's voor de e-mail: de hex van de gekozen kleur en het profiel-kenmerk,
+  // zodat de mail de deur schematisch kan tekenen.
+  const voorMail = {
     ...aanvraag,
-    kleurHex,
+    kleurHex: zoekKleurHex(aanvraag.kleur),
+    profiel: (PROFILERINGEN.find(p => p.naam === aanvraag.profilering) || {}).profiel || 'hoog'
+  };
+  const intern = offerteIntern({
+    ...voorMail,
     tijdstip: new Date().toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' }),
     ip: req.ip
   });
-  const bevestiging = offerteBevestiging({ ...aanvraag, kleurHex });
+  const bevestiging = offerteBevestiging(voorMail);
 
   try {
     if (!resend) {
