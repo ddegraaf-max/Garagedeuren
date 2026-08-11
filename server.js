@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.19.1'; // cache-busting ?v=
+const SITE_VERSION = '1.20.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -303,17 +303,8 @@ Antwoord UITSLUITEND met geldig JSON (geen markdown, geen backticks) in exact di
   "observaties": ["2-4 relevante observaties over staat, materiaal, latei, zijruimte, obstakels zoals leidingen/lampen/stopcontacten"],
   "meetinstructies": ["4-6 concrete stappen om breedte, hoogte, latei (ruimte boven de opening) en zijruimte op te meten, afgestemd op wat er op de foto te zien is"],
   "modeladvies": "welk D-GATE model waarschijnlijk past en waarom (op basis van zichtbare latei/zijruimte); benoem het onder voorbehoud",
-  "aandachtspunten": ["0-3 punten die de monteur moet weten (bijv. elektra verplaatsen, scheve opening, beperkte inbouwdiepte)"],
-  "opening": {"x1": 0.00, "y1": 0.00, "x2": 0.00, "y2": 0.00} of null
+  "aandachtspunten": ["0-3 punten die de monteur moet weten (bijv. elektra verplaatsen, scheve opening, beperkte inbouwdiepte)"]
 }
-
-Over "opening": geef de positie van de garageopening (het gat in de muur, of het
-deurblad als de deur dicht is) als verhoudingen van de fotobreedte en -hoogte.
-0,0 is linksboven, 1,1 is rechtsonder. x1/y1 is de linkerbovenhoek, x2/y2 de
-rechteronderhoek. Wij tekenen hier maatlijnen overheen, dus wees nauwkeurig:
-volg de randen van de opening, niet van het hele gebouw. Kun je de opening niet
-betrouwbaar aanwijzen — bijvoorbeeld bij een scheve hoek of een half zichtbare
-deur — zet "opening" dan op null. Liever geen lijnen dan lijnen op de verkeerde plek.
 
 Wees concreet en vriendelijk, in het Nederlands, tutoyeer. Doe geen prijsuitspraken. Als de foto geen garage toont, zet herkend op false en leg in deurtype kort uit wat je wel ziet.`;
 
@@ -353,8 +344,7 @@ app.post('/api/inmeet', (req, res) => {
           'Meet de vrije ruimte links en rechts van de opening.'
         ],
         modeladvies: 'Testmodus: op basis van dit voorbeeld zou D-GATE B passen (onder voorbehoud).',
-        aandachtspunten: ['Zet INMEET_MOCK uit om echte analyses te doen.'],
-        opening: { x1: 0.18, y1: 0.22, x2: 0.82, y2: 0.88 }
+        aandachtspunten: ['Zet INMEET_MOCK uit om echte analyses te doen.']
       });
     }
 
@@ -382,13 +372,6 @@ app.post('/api/inmeet', (req, res) => {
       const tekst = msg.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
       const schoon = tekst.replace(/```json|```/g, '').trim();
       const data = JSON.parse(schoon);
-      // De coördinaten gaan rechtstreeks de tekening in, dus we vertrouwen ze niet
-      // blind: alles moet een getal tussen 0 en 1 zijn en een vlak van betekenis
-      // opspannen. Klopt er iets niet, dan tekenen we liever niets.
-      const o = data.opening;
-      const getal = (x) => typeof x === 'number' && isFinite(x) && x >= 0 && x <= 1;
-      data.opening = (o && getal(o.x1) && getal(o.y1) && getal(o.x2) && getal(o.y2) &&
-        o.x2 - o.x1 > 0.05 && o.y2 - o.y1 > 0.05) ? o : null;
       res.json(data);
     } catch (err) {
       console.error('Inmeet-assistent fout:', err.message);

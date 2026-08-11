@@ -44,82 +44,6 @@
     knop.disabled = !gekozen;
   }
 
-  // ---- maatlijnen over de foto van de klant ----
-  // De AI geeft de opening als verhoudingen (0-1). We tekenen in de natuurlijke
-  // pixelmaat van de foto, zodat lijndikte en tekst netjes meeschalen.
-  function tekenMaatlijnen(fotoUrl, opening) {
-    var blok = document.getElementById('resFotoBlok');
-    var doek = document.getElementById('meetDoek');
-    var foto = document.getElementById('meetFoto');
-    if (!blok || !opening) { if (blok) blok.hidden = true; return; }
-
-    foto.onload = function () {
-      var W = foto.naturalWidth, H = foto.naturalHeight;
-      var oud = doek.querySelector('svg');
-      if (oud) oud.remove();
-
-      var x1 = opening.x1 * W, y1 = opening.y1 * H;
-      var x2 = opening.x2 * W, y2 = opening.y2 * H;
-      var eenheid = Math.max(W, H) / 100;      // alles schaalt mee met de foto
-      var lijn = eenheid * 0.55;
-      var tekst = eenheid * 3.4;
-
-      var NS = 'http://www.w3.org/2000/svg';
-      var svg = document.createElementNS(NS, 'svg');
-      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-      svg.setAttribute('class', 'meet-svg');
-
-      function el(naam, kenmerken) {
-        var e = document.createElementNS(NS, naam);
-        for (var k in kenmerken) e.setAttribute(k, kenmerken[k]);
-        svg.appendChild(e);
-        return e;
-      }
-
-      // dubbele pijl met een leesbaar label erop
-      function maat(ax, ay, bx, by, label, kant) {
-        el('line', { x1: ax, y1: ay, x2: bx, y2: by, stroke: '#f2a33c',
-          'stroke-width': lijn, 'marker-start': 'url(#pijl)', 'marker-end': 'url(#pijl)' });
-        var mx = (ax + bx) / 2, my = (ay + by) / 2;
-        var breedte = label.length * tekst * 0.62 + tekst * 0.9;
-        var hoogte = tekst * 1.7;
-        if (kant === 'links') mx += breedte / 2 + eenheid;
-        if (kant === 'boven') my -= hoogte / 2 + eenheid;
-        el('rect', { x: mx - breedte / 2, y: my - hoogte / 2, width: breedte, height: hoogte,
-          rx: hoogte / 2, fill: '#1e2225' });
-        var t = el('text', { x: mx, y: my, fill: '#ffffff', 'font-size': tekst,
-          'font-family': 'system-ui, sans-serif', 'font-weight': '700',
-          'text-anchor': 'middle', 'dominant-baseline': 'central' });
-        t.textContent = label;
-      }
-
-      var defs = el('defs', {});
-      var marker = document.createElementNS(NS, 'marker');
-      marker.setAttribute('id', 'pijl');
-      marker.setAttribute('viewBox', '0 0 10 10');
-      marker.setAttribute('refX', '5'); marker.setAttribute('refY', '5');
-      marker.setAttribute('markerWidth', '4'); marker.setAttribute('markerHeight', '4');
-      marker.setAttribute('orient', 'auto-start-reverse');
-      var pad = document.createElementNS(NS, 'path');
-      pad.setAttribute('d', 'M 10 5 L 0 0 L 0 10 z');
-      pad.setAttribute('fill', '#f2a33c');
-      marker.appendChild(pad); defs.appendChild(marker);
-
-      // omtrek van de opening
-      el('rect', { x: x1, y: y1, width: x2 - x1, height: y2 - y1, fill: 'none',
-        stroke: '#f2a33c', 'stroke-width': lijn * 1.3, 'stroke-dasharray': eenheid * 2 + ' ' + eenheid * 1.4 });
-
-      maat(x1, y2 + eenheid * 3, x2, y2 + eenheid * 3, 'Breedte', 'onder');
-      maat(x1 - eenheid * 3, y1, x1 - eenheid * 3, y2, 'Hoogte', 'links');
-      if (y1 > H * 0.08) maat(x1 + (x2 - x1) / 2, 0, x1 + (x2 - x1) / 2, y1, 'Latei', 'boven');
-      if (x1 > W * 0.06) maat(0, y1 + (y2 - y1) / 2, x1, y1 + (y2 - y1) / 2, 'Zijruimte', 'onder');
-
-      doek.appendChild(svg);
-      blok.hidden = false;
-    };
-    foto.src = fotoUrl;
-  }
-
   function vul(lijstEl, items) {
     lijstEl.innerHTML = '';
     (items || []).forEach(function (t) {
@@ -155,7 +79,6 @@
         return;
       }
 
-      tekenMaatlijnen(preview.src, data.opening);
       document.getElementById('resDeurtype').textContent = data.deurtype || '';
       vul(document.getElementById('resObservaties'), data.observaties);
       vul(document.getElementById('resInstructies'), data.meetinstructies);
