@@ -122,13 +122,14 @@
           </div>
 
           <label>Paneeldikte
-            <select name="dikte">
+            <select name="dikte" id="dikteSelect">
               <option value="">Weet ik nog niet</option>
               <% diktes.forEach(dk => { %>
-                <option<%= keuze('dikte', dk) %>><%= dk %></option>
+                <option value="<%= dk.naam %>"<%= keuze('dikte', dk.naam) %><%= dk.alleenModel ? ` data-alleen-model="${dk.alleenModel}"` : '' %>><%= dk.naam %><%= dk.alleenModel ? ` — alleen ${dk.alleenModel}` : '' %></option>
               <% }) %>
             </select>
           </label>
+          <p class="veld-hint" id="dikteHint" hidden>60 mm is alleen leverbaar op de D-GATE U — dat model is voor je aangevinkt.</p>
           <label>Bediening
             <select name="motor">
               <option value="">Weet ik nog niet</option>

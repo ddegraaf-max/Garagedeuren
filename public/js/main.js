@@ -89,6 +89,54 @@
       t.addEventListener('click', function () { zetProfiel(t.dataset.profiel); });
     });
 
+    // 60 mm panelen bestaan alleen op de D-GATE U.
+    // Kiest iemand 60 mm, dan vinken we dat model meteen aan; kiest iemand een
+    // ander model, dan is 60 mm niet meer selecteerbaar.
+    var dikteSelect = document.getElementById('dikteSelect');
+    var dikteHint = document.getElementById('dikteHint');
+    var modelKeuzes = offerteForm.querySelectorAll('input[name="model"]');
+
+    function gekozenModel() {
+      var aan = offerteForm.querySelector('input[name="model"]:checked');
+      return aan ? aan.value : '';
+    }
+
+    function ververDiktes() {
+      if (!dikteSelect) return;
+      var model = gekozenModel();
+      Array.prototype.forEach.call(dikteSelect.options, function (o) {
+        var alleen = o.getAttribute('data-alleen-model');
+        if (!alleen) return;
+        // toegestaan als er nog geen model gekozen is, of als het het juiste model is
+        var mag = model === '' || model.indexOf(alleen) === 0;
+        o.disabled = !mag;
+        if (!mag && dikteSelect.value === o.value) {
+          dikteSelect.value = '';
+          if (dikteHint) dikteHint.hidden = true;
+        }
+      });
+    }
+
+    if (dikteSelect) {
+      dikteSelect.addEventListener('change', function () {
+        var optie = dikteSelect.options[dikteSelect.selectedIndex];
+        var alleen = optie && optie.getAttribute('data-alleen-model');
+        if (!alleen) { if (dikteHint) dikteHint.hidden = true; return; }
+        Array.prototype.forEach.call(modelKeuzes, function (r) {
+          if (r.value.indexOf(alleen) === 0) r.checked = true;
+        });
+        if (dikteHint) dikteHint.hidden = false;
+        ververDiktes();
+      });
+      Array.prototype.forEach.call(modelKeuzes, function (r) {
+        r.addEventListener('change', function () {
+          if (dikteHint) dikteHint.hidden = true;
+          ververDiktes();
+        });
+      });
+      ververDiktes();
+    }
+
     // Beginstand herstellen — nodig als het formulier na een fout opnieuw wordt getoond
     var gekozenTegel = offerteForm.querySelector('.kleur-tegel input:checked');
     if (gekozenTegel) {

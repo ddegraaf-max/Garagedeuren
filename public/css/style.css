@@ -730,3 +730,9 @@ a { color: inherit; }
 .teaser-visual svg { width: 100%; height: auto; display: block; }
 
 .model-brochure { font-size: 0.92rem; color: var(--inkt-zacht); }
+
+.veld-hint {
+  font-size: 0.83rem; line-height: 1.45; color: var(--accent-diep);
+  background: rgba(242, 163, 60, 0.12); border-radius: 8px;
+  padding: 0.5rem 0.75rem; margin: -0.5rem 0 1rem;
+}

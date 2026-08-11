@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.8.1'; // cache-busting ?v=
+const SITE_VERSION = '1.9.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -247,7 +247,12 @@ const AFWERKINGEN = [
   { naam: 'Deep Mat', code: 'V', kort: 'Diep mat, hoog reliëf', afb: '/img/paneel-deepmat.jpg', profiel: 'hoog' }
 ];
 
-const DIKTES = ['40 mm', '60 mm (alleen D-GATE U)'];
+// 60 mm panelen zijn alleen leverbaar op de D-GATE U. `alleenModel` legt dat vast:
+// het formulier schakelt de optie uit bij een ander model en de server dwingt het af.
+const DIKTES = [
+  { naam: '40 mm', alleenModel: null },
+  { naam: '60 mm', alleenModel: 'D-GATE U' }
+];
 
 // ---------- Routes ----------
 app.get('/', (req, res) => res.render('index', { modellen, kleuren, page: 'home' }));
@@ -356,12 +361,20 @@ app.post('/offerte', async (req, res) => {
     breedte: nette(d.breedte),
     hoogte: nette(d.hoogte),
     model: uitLijst(nette(d.model), modellen.map(m => `${m.naam} (${m.sub.toLowerCase()})`)),
-    dikte: uitLijst(nette(d.dikte), DIKTES),
+    dikte: uitLijst(nette(d.dikte), DIKTES.map(x => x.naam)),
     afwerking: uitLijst(nette(d.afwerking), AFWERKINGEN.map(a => a.naam)),
     kleur: uitLijst(nette(d.kleur), kleuren.map(k => k.naam)),
     motor: nette(d.motor),
     opmerking: nette(d.opmerking)
   };
+
+  // 60 mm bestaat alleen op de D-GATE U. Het formulier regelt dit al met JavaScript,
+  // maar zonder JS (of bij een geknutselde POST) zetten we het model hier alsnog goed.
+  const dikteRegel = DIKTES.find(x => x.naam === aanvraag.dikte);
+  if (dikteRegel && dikteRegel.alleenModel && aanvraag.model.indexOf(dikteRegel.alleenModel) !== 0) {
+    const juist = modellen.find(m => m.naam === dikteRegel.alleenModel);
+    if (juist) aanvraag.model = `${juist.naam} (${juist.sub.toLowerCase()})`;
+  }
 
   // Honeypot: echte bezoekers vullen dit verborgen veld nooit in
   if (d.website) {
