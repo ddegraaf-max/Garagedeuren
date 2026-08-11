@@ -74,8 +74,9 @@
       });
     }
 
-    // Paneelafwerking bepaalt het reliëf op de preview
-    // (Smooth = geen groeven, Woodgrain = laag, Deep Mat = hoog)
+    // De profilering (F / L / V) bepaalt de groeven op de preview.
+    // De afwerking (Smooth / Woodgrain / Deep Mat) is het oppervlak en
+    // verandert de preview bewust niet.
     function zetProfiel(profiel) {
       document.querySelectorAll('.profiel-hoog').forEach(function (g) {
         g.style.display = profiel === 'hoog' ? '' : 'none';
@@ -85,9 +86,46 @@
       });
     }
 
-    offerteForm.querySelectorAll('.afwerking-tegel').forEach(function (t) {
-      t.addEventListener('click', function () { zetProfiel(t.dataset.profiel); });
+    offerteForm.querySelectorAll('.profiel-knop').forEach(function (t) {
+      t.addEventListener('click', function () {
+        offerteForm.querySelectorAll('.profiel-knop').forEach(function (x) { x.classList.remove('actief'); });
+        t.classList.add('actief');
+        zetProfiel(t.dataset.profiel);
+      });
     });
+
+    // Elk model heeft een maximale maat. Vult iemand een grotere opening in,
+    // dan markeren we de modellen die dat niet halen — zodat de aanvraag klopt.
+    var breedteVeld = offerteForm.querySelector('input[name="breedte"]');
+    var hoogteVeld = offerteForm.querySelector('input[name="hoogte"]');
+    var modelTegels = offerteForm.querySelectorAll('.model-tegel[data-max-breedte]');
+
+    function toetsMaten() {
+      var b = parseInt(breedteVeld && breedteVeld.value, 10);
+      var h = parseInt(hoogteVeld && hoogteVeld.value, 10);
+      modelTegels.forEach(function (tegel) {
+        var maxB = parseInt(tegel.dataset.maxBreedte, 10);
+        var maxH = parseInt(tegel.dataset.maxHoogte, 10);
+        var telaag = (b > 0 && b > maxB) || (h > 0 && h > maxH);
+        tegel.classList.toggle('niet-mogelijk', telaag);
+        var melding = tegel.querySelector('.model-tegroot');
+        if (melding) melding.hidden = !telaag;
+        var radio = tegel.querySelector('input[name="model"]');
+        if (radio) {
+          radio.disabled = telaag;
+          // stond dit model aangevinkt maar past het niet meer? dan terug naar "weet ik nog niet"
+          if (telaag && radio.checked) {
+            radio.checked = false;
+            var geen = offerteForm.querySelector('.model-tegel-geen input');
+            if (geen) geen.checked = true;
+          }
+        }
+      });
+    }
+
+    if (breedteVeld) breedteVeld.addEventListener('input', toetsMaten);
+    if (hoogteVeld) hoogteVeld.addEventListener('input', toetsMaten);
+    toetsMaten();
 
     // 60 mm panelen bestaan alleen op de D-GATE U.
     // Kiest iemand 60 mm, dan vinken we dat model meteen aan; kiest iemand een
@@ -144,8 +182,8 @@
       tegel.classList.add('actief');
       zetKleur(tegel.dataset.hex, tegel.dataset.naam);
     }
-    var gekozenAfwerking = offerteForm.querySelector('.afwerking-tegel input:checked');
-    if (gekozenAfwerking) zetProfiel(gekozenAfwerking.closest('.afwerking-tegel').dataset.profiel);
+    var gekozenProfiel = offerteForm.querySelector('.profiel-knop input:checked');
+    if (gekozenProfiel) zetProfiel(gekozenProfiel.closest('.profiel-knop').dataset.profiel);
   }
 
   // Model prefill via ?model= op de offertepagina (link vanaf /modellen).

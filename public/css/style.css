@@ -362,11 +362,10 @@ a { color: inherit; }
 .pagina-intro { color: var(--inkt-zacht); font-size: 1.1rem; max-width: 64ch; }
 
 .model-detail-lijst { display: grid; gap: 1.4rem; }
-.model-detail-beeld { margin: 0 0 1.4rem; }
-.model-detail-beeld img {
-  display: block; width: 100%; height: auto;
-  background: #fff; border: 1px solid var(--lijn); border-radius: 10px;
-}
+/* De bronrenders zijn 960 px breed. Groter tonen dan 480 px betekent op een
+   retina-scherm minder dan 1 bronpixel per schermpixel — dan oogt het zacht.
+   Daarom cappen we de weergavebreedte op de helft van de bron. */
+.model-detail-beeld { margin: 0 0 1.4rem; max-width: 480px; }
 .model-detail-beeld figcaption {
   font-size: 0.82rem; color: var(--inkt-zacht);
   margin-top: 0.5rem; text-align: center;
@@ -543,10 +542,35 @@ a { color: inherit; }
   border-color: var(--accent-diep); background: var(--papier);
   box-shadow: 0 0 0 2px rgba(217, 127, 26, 0.25);
 }
+/* vaste verhouding + cover: de drie tegels lijnen altijd uit,
+   ook als een bronfoto ooit een ander formaat heeft */
 .offerte-form .afwerking-tegel img {
   display: block; width: 100%; height: auto; margin-bottom: 0.4rem;
+  aspect-ratio: 76 / 104; object-fit: cover;
   border-radius: 8px; background: var(--wit);
 }
+.afwerking-rooster { align-items: stretch; }
+.offerte-form .afwerking-tegel {
+  display: flex; flex-direction: column;
+}
+.afwerking-kort { margin-top: auto; }
+
+/* profileringkeuze (F / L / V) — stuurt de preview aan */
+.offerte-form .profiel-knop {
+  position: relative; display: inline-block; margin-bottom: 0;
+  padding: 0.55rem 1rem; border: 1.5px solid var(--lijn); border-radius: 999px;
+  background: var(--wit); cursor: pointer;
+  font-size: 0.86rem; font-weight: 600; color: var(--inkt); transition: 0.15s;
+}
+.offerte-form .profiel-knop input {
+  position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none;
+}
+.offerte-form .profiel-knop:hover { border-color: var(--accent-diep); }
+.offerte-form .profiel-knop:has(input:checked),
+.offerte-form .profiel-knop.actief {
+  border-color: var(--accent-diep); background: var(--accent); color: var(--antraciet);
+}
+.offerte-form .profiel-knop .afwerking-code { background: rgba(35, 38, 42, 0.12); }
 .afwerking-naam { display: block; font-size: 0.85rem; font-weight: 700; color: var(--inkt); }
 .afwerking-code {
   display: inline-block; font-size: 0.66rem; font-weight: 800;
@@ -761,4 +785,12 @@ a { color: inherit; }
   font-size: 0.83rem; line-height: 1.45; color: var(--accent-diep);
   background: rgba(242, 163, 60, 0.12); border-radius: 8px;
   padding: 0.5rem 0.75rem; margin: -0.5rem 0 1rem;
+}
+
+/* modeltegel die niet past bij de ingevulde maat */
+.offerte-form .model-tegel.niet-mogelijk { opacity: 0.45; cursor: not-allowed; }
+.offerte-form .model-tegel.niet-mogelijk:hover { border-color: var(--lijn); }
+.model-tegroot {
+  display: block; margin-top: 0.4rem; font-size: 0.72rem; font-weight: 700;
+  color: #a3402c; background: #f9e8e4; border-radius: 6px; padding: 0.25rem 0.45rem;
 }

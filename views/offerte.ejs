@@ -68,14 +68,25 @@
         <fieldset class="kleur-veld">
           <legend>Kleur &amp; afwerking <span class="optioneel">(optioneel — je ziet het direct)</span></legend>
 
-          <span class="optie-label">Paneelafwerking</span>
+          <span class="optie-label">Profilering <span class="optioneel">— de groeven in het paneel; dit zie je hiernaast meteen terug</span></span>
+          <div class="paneel-keuzes">
+            <% profileringen.forEach((p, i) => {
+                 const aan = v.profilering ? v.profilering === p.naam : i === 2; %>
+              <label class="profiel-knop<%= aan ? ' actief' : '' %>" data-profiel="<%= p.profiel %>">
+                <input type="radio" name="profilering" value="<%= p.naam %>"<%= aan ? ' checked' : '' %>>
+                <span><%= p.naam %> <span class="afwerking-code"><%= p.code %></span></span>
+              </label>
+            <% }) %>
+          </div>
+
+          <span class="optie-label">Paneelafwerking <span class="optioneel">— het oppervlak van het paneel</span></span>
           <div class="afwerking-rooster">
             <% afwerkingen.forEach((a, i) => {
                  const aan = v.afwerking ? v.afwerking === a.naam : i === 1; %>
-              <label class="afwerking-tegel" data-profiel="<%= a.profiel %>">
+              <label class="afwerking-tegel">
                 <input type="radio" name="afwerking" value="<%= a.naam %>"<%= aan ? ' checked' : '' %>>
-                <img src="<%= a.afb %>" alt="Paneel <%= a.naam %>" loading="lazy" width="760" height="1035">
-                <span class="afwerking-naam"><%= a.naam %> <span class="afwerking-code"><%= a.code %></span></span>
+                <img src="<%= a.afb %>" alt="Paneel <%= a.naam %>" loading="lazy" width="760" height="1040">
+                <span class="afwerking-naam"><%= a.naam %></span>
                 <span class="afwerking-kort"><%= a.kort %></span>
               </label>
             <% }) %>
@@ -110,13 +121,17 @@
               <span class="model-sub">Wij adviseren op basis van je latei en zijruimte</span>
             </label>
             <% modellen.forEach(mo => { const waarde = `${mo.naam} (${mo.sub.toLowerCase()})`; %>
-              <label class="model-tegel">
+              <label class="model-tegel" data-max-breedte="<%= mo.maxCm.breedte %>" data-max-hoogte="<%= mo.maxCm.hoogte %>">
                 <input type="radio" name="model" value="<%= waarde %>"<%= v.model === waarde ? ' checked' : '' %>>
                 <%- include('partials/model-beeld', { m: mo }) %>
                 <span class="model-naam"><%= mo.naam %></span>
                 <span class="model-sub"><%= mo.sub %></span>
                 <span class="model-tekst"><%= mo.kort %></span>
-                <span class="model-spec">Latei vanaf <%= mo.specs.latei %> &middot; tot <%= mo.specs.gewicht %></span>
+                <span class="model-spec">
+                  Tot <%= mo.maxCm.breedte %> &times; <%= mo.maxCm.hoogte %> cm &middot; paneel tot <%= mo.specs.gewicht %><br>
+                  Latei vanaf <%= mo.specs.latei %>
+                </span>
+                <span class="model-tegroot" hidden>Te klein voor de maat die je invulde</span>
               </label>
             <% }) %>
           </div>
@@ -125,7 +140,7 @@
             <select name="dikte" id="dikteSelect">
               <option value="">Weet ik nog niet</option>
               <% diktes.forEach(dk => { %>
-                <option value="<%= dk.naam %>"<%= keuze('dikte', dk.naam) %><%= dk.alleenModel ? ` data-alleen-model="${dk.alleenModel}"` : '' %>><%= dk.naam %><%= dk.alleenModel ? ` — alleen ${dk.alleenModel}` : '' %></option>
+                <option value="<%= dk.naam %>"<%= keuze('dikte', dk.naam) %><% if (dk.alleenModel) { %> data-alleen-model="<%= dk.alleenModel %>"<% } %>><%= dk.naam %><% if (dk.alleenModel) { %> — alleen <%= dk.alleenModel %><% } %></option>
               <% }) %>
             </select>
           </label>

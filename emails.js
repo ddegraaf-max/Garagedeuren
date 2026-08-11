@@ -282,6 +282,14 @@ function offerteIntern(a) {
       ['Postcode', a.postcode]
     ])}
 
+    ${heeft(a.maatWaarschuwing) ? `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fdf0e6" style="background-color:#fdf0e6;border:1px solid ${KLEUR.accent};border-radius:10px;margin:0 0 6px;">
+      <tr><td style="padding:13px 16px;font-family:${FONT};font-size:14px;line-height:21px;color:${KLEUR.inkt};">
+        <strong style="color:${KLEUR.accentDiep};">Let op &mdash; maat past niet bij het gekozen model</strong><br>
+        ${esc(a.maatWaarschuwing)}
+      </td></tr>
+    </table>` : ''}
+
     ${sectieKop('Gewenste deur')}
     ${deurBlok(a, { compact: true })}
     ${lijst([

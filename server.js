@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.11.0'; // cache-busting ?v=
+const SITE_VERSION = '1.13.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -143,6 +143,7 @@ app.use((req, res, next) => {
 const modellen = [
   {
     slug: 'd-gate-u',
+    maxCm: { breedte: 600, hoogte: 350 }, // grens uit de Drutex-specificatie
     afb: '/img/d-gate-u.jpg',
     detail: '/img/d-gate-u-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE U',
@@ -161,6 +162,7 @@ const modellen = [
   },
   {
     slug: 'd-gate-b',
+    maxCm: { breedte: 600, hoogte: 300 }, // grens uit de Drutex-specificatie
     afb: '/img/d-gate-b.jpg',
     detail: '/img/d-gate-b-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE B',
@@ -177,6 +179,7 @@ const modellen = [
   },
   {
     slug: 'd-gate-t',
+    maxCm: { breedte: 450, hoogte: 250 }, // grens uit de Drutex-specificatie
     afb: '/img/d-gate-t.jpg',
     detail: '/img/d-gate-t-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE T',
@@ -244,10 +247,19 @@ function zoekKleurHex(tekst) {
 // Paneelafwerking volgens de Drutex-brochure: de structuur ís het reliëf.
 // Woodgrain = low embossing, Deep Mat = high embossing, Smooth = zonder reliëf.
 // Daarom één keuze in plaats van twee; `profiel` stuurt de SVG-preview aan.
+// Oppervlak van het paneel — bepaalt hoe het paneel aanvoelt en oogt.
 const AFWERKINGEN = [
-  { naam: 'Smooth', code: 'F', kort: 'Vlak paneel, zonder reliëf', afb: '/img/paneel-glad.jpg', profiel: 'glad' },
-  { naam: 'Woodgrain', code: 'L', kort: 'Fijne houtnerf, laag reliëf', afb: '/img/paneel-woodgrain.jpg', profiel: 'laag' },
-  { naam: 'Deep Mat', code: 'V', kort: 'Diep mat, hoog reliëf', afb: '/img/paneel-deepmat.jpg', profiel: 'hoog' }
+  { naam: 'Smooth', kort: 'Glad oppervlak', afb: '/img/paneel-glad.jpg' },
+  { naam: 'Woodgrain', kort: 'Houtnerfstructuur', afb: '/img/paneel-woodgrain.jpg' },
+  { naam: 'Deep Mat', kort: 'Diep matte structuur', afb: '/img/paneel-deepmat.jpg' }
+];
+
+// Profilering = de groeven in het paneel. Dit is wat je op de deur zíet,
+// dus dit stuurt de preview aan (zie public/js/main.js).
+const PROFILERINGEN = [
+  { naam: 'Zonder profilering', code: 'F', profiel: 'glad' },
+  { naam: 'Lage profilering', code: 'L', profiel: 'laag' },
+  { naam: 'Hoge profilering', code: 'V', profiel: 'hoog' }
 ];
 
 // 60 mm panelen zijn alleen leverbaar op de D-GATE U. `alleenModel` legt dat vast:
@@ -265,7 +277,8 @@ app.get('/kleuren', (req, res) => res.render('kleuren', { kleuren, page: 'kleure
 function toonFormulier(res, { status = 200, fout = null, waarden = {} } = {}) {
   res.status(status).render('offerte', {
     page: 'offerte', verzonden: false, fout, waarden,
-    kleuren, modellen, afwerkingen: AFWERKINGEN, diktes: DIKTES, som: maakSom()
+    kleuren, modellen, afwerkingen: AFWERKINGEN, profileringen: PROFILERINGEN,
+    diktes: DIKTES, som: maakSom()
   });
 }
 
@@ -366,6 +379,7 @@ app.post('/offerte', async (req, res) => {
     model: uitLijst(nette(d.model), modellen.map(m => `${m.naam} (${m.sub.toLowerCase()})`)),
     dikte: uitLijst(nette(d.dikte), DIKTES.map(x => x.naam)),
     afwerking: uitLijst(nette(d.afwerking), AFWERKINGEN.map(a => a.naam)),
+    profilering: uitLijst(nette(d.profilering), PROFILERINGEN.map(p => p.naam)),
     kleur: uitLijst(nette(d.kleur), kleuren.map(k => k.naam)),
     motor: nette(d.motor),
     opmerking: nette(d.opmerking)
@@ -420,13 +434,29 @@ app.post('/offerte', async (req, res) => {
 
   // Extra's voor de e-mail: de hex van de gekozen kleur en het profiel-kenmerk,
   // zodat de mail de deur schematisch kan tekenen.
-  const gekozenAfwerking = AFWERKINGEN.find(a => a.naam === aanvraag.afwerking);
+  // Past het gekozen model bij de opgegeven maat? We weigeren de aanvraag niet —
+  // een lead is te waardevol — maar zetten het er voor onszelf duidelijk bij.
+  let maatWaarschuwing = '';
+  const gekozenModel = modellen.find(m => aanvraag.model.indexOf(m.naam) === 0);
+  if (gekozenModel) {
+    const b = parseInt(aanvraag.breedte, 10);
+    const h = parseInt(aanvraag.hoogte, 10);
+    const teBreed = b > gekozenModel.maxCm.breedte;
+    const teHoog = h > gekozenModel.maxCm.hoogte;
+    if (teBreed || teHoog) {
+      maatWaarschuwing = `De opgegeven maat (${b} × ${h} cm) past niet binnen de ${gekozenModel.naam} ` +
+        `(max ${gekozenModel.maxCm.breedte} × ${gekozenModel.maxCm.hoogte} cm). Neem contact op over een passend model.`;
+    }
+  }
+
+  const gekozenProfiel = PROFILERINGEN.find(p => p.naam === aanvraag.profilering);
   const voorMail = {
     ...aanvraag,
     // "40 mm — Woodgrain": één regel in de mail in plaats van twee losse velden
     paneel: [aanvraag.dikte, aanvraag.afwerking].filter(Boolean).join(' — '),
     kleurHex: zoekKleurHex(aanvraag.kleur),
-    profiel: (gekozenAfwerking || {}).profiel || 'laag'
+    profiel: (gekozenProfiel || {}).profiel || 'hoog',
+    maatWaarschuwing
   };
   const intern = offerteIntern({
     ...voorMail,
