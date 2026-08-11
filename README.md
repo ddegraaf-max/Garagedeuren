@@ -34,7 +34,9 @@ Draait op http://localhost:3000
 
 ## Structuur
 - `server.js` — routes, modellen-/kleurendata, offerte-endpoint (rekensom, Resend, klantbevestiging)
-- `emails.js` — HTML-e-mailsjablonen in de huisstijl (table-based, geen externe afbeeldingen)
+- `emails.js` — HTML-e-mailsjablonen in de huisstijl (table-based, geen externe afbeeldingen).
+  De deur wordt met tabelcellen getekend omdat SVG niet rendert in Gmail/Outlook, en alleen
+  als de klant echt een kleur koos.
 - `views/` — EJS templates (index, modellen, kleuren, offerte, privacy, 404)
 - `views/partials/deur-svg.ejs` — interactieve SVG-deurpreview (kleur + paneelstructuur)
 - `public/css/style.css` — huisstijl (Archivo + Instrument Sans, antraciet/amber)
