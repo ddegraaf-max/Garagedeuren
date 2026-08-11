@@ -796,3 +796,7 @@ a { color: inherit; }
 }
 
 .model-latei { color: var(--inkt-zacht); opacity: 0.85; }
+
+/* tijdens de analyse blijft het uploadblok staan (anders klapt de pagina in
+   en springt de browser naar beneden), maar is het niet meer bedienbaar */
+.inmeet-upload.bezig { opacity: 0.45; pointer-events: none; transition: opacity 0.2s; }

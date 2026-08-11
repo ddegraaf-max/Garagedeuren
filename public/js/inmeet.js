@@ -40,6 +40,8 @@
     foutBlok.hidden = false;
     statusBlok.hidden = true;
     uploadBlok.hidden = false;
+    uploadBlok.classList.remove('bezig');
+    knop.disabled = !gekozen;
   }
 
   function vul(lijstEl, items) {
@@ -53,9 +55,13 @@
 
   knop.addEventListener('click', async function () {
     if (!gekozen) return;
-    uploadBlok.hidden = true;
+    // Het uploadblok blijft staan. Weghalen laat de pagina inklappen, en omdat
+    // de browser de scrollpositie vasthoudt beland je dan onderaan de pagina.
     foutBlok.hidden = true;
+    uploadBlok.classList.add('bezig');
+    knop.disabled = true;
     statusBlok.hidden = false;
+    statusBlok.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
     var fd = new FormData();
     fd.append('foto', gekozen);
@@ -85,6 +91,10 @@
       else if (/D-GATE T/i.test(data.modeladvies || '')) model = 'D-GATE T';
       if (model) document.getElementById('resOfferteLink').href = '/offerte?model=' + encodeURIComponent(model);
 
+      // pas nu het uploadblok weg; we scrollen meteen naar het resultaat,
+      // dus het inklappen is niet merkbaar
+      uploadBlok.hidden = true;
+      uploadBlok.classList.remove('bezig');
       resultaatBlok.hidden = false;
       resultaatBlok.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
@@ -95,10 +105,12 @@
   document.getElementById('opnieuwBtn').addEventListener('click', function () {
     resultaatBlok.hidden = true;
     uploadBlok.hidden = false;
+    uploadBlok.classList.remove('bezig');
+    foutBlok.hidden = true;
     preview.hidden = true;
     knop.disabled = true;
     gekozen = null;
     input.value = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    uploadBlok.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 })();
