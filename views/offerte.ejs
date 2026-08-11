@@ -24,9 +24,13 @@
         <a href="/" class="btn btn-secundair">Terug naar home</a>
       </div>
     <% } else { %>
+      <%
+        const v = typeof waarden !== 'undefined' && waarden ? waarden : {};
+        const keuze = (naam, optie) => v[naam] === optie ? ' selected' : '';
+      %>
       <% if (typeof fout !== 'undefined' && fout) { %>
-        <div class="melding melding-fout">
-          <p>Er ging iets mis bij het versturen. Probeer het later opnieuw of mail ons direct.</p>
+        <div class="melding melding-fout" role="alert">
+          <p><%= fout %></p>
         </div>
       <% } %>
       <form method="POST" action="/offerte" class="offerte-form">
@@ -36,20 +40,20 @@
         <fieldset>
           <legend>Je gegevens</legend>
           <div class="veld-rij">
-            <label>Naam *<input type="text" name="naam" required autocomplete="name"></label>
-            <label>E-mail *<input type="email" name="email" required autocomplete="email"></label>
+            <label>Naam *<input type="text" name="naam" required autocomplete="name" value="<%= v.naam || '' %>"></label>
+            <label>E-mail *<input type="email" name="email" required autocomplete="email" value="<%= v.email || '' %>"></label>
           </div>
           <div class="veld-rij">
-            <label>Telefoon<input type="tel" name="telefoon" autocomplete="tel"></label>
-            <label>Postcode *<input type="text" name="postcode" required autocomplete="postal-code" placeholder="1234 AB"></label>
+            <label>Telefoon<input type="tel" name="telefoon" autocomplete="tel" value="<%= v.telefoon || '' %>"></label>
+            <label>Postcode *<input type="text" name="postcode" required autocomplete="postal-code" placeholder="1234 AB" value="<%= v.postcode || '' %>"></label>
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Je garageopening</legend>
           <div class="veld-rij">
-            <label>Breedte (cm) *<input type="number" name="breedte" min="150" max="600" required placeholder="bijv. 250"></label>
-            <label>Hoogte (cm) *<input type="number" name="hoogte" min="150" max="350" required placeholder="bijv. 212"></label>
+            <label>Breedte (cm) *<input type="number" name="breedte" min="150" max="600" required placeholder="bijv. 250" value="<%= v.breedte || '' %>"></label>
+            <label>Hoogte (cm) *<input type="number" name="hoogte" min="150" max="350" required placeholder="bijv. 212" value="<%= v.hoogte || '' %>"></label>
           </div>
         </fieldset>
 
@@ -59,38 +63,47 @@
             <label>Model
               <select name="model" id="modelSelect">
                 <option value="">Weet ik nog niet / advies gewenst</option>
-                <option>D-GATE U (torsieveer vóór)</option>
-                <option>D-GATE B (torsieveer achter)</option>
-                <option>D-GATE T (trekveren)</option>
+                <option<%= keuze('model', 'D-GATE U (torsieveer vóór)') %>>D-GATE U (torsieveer vóór)</option>
+                <option<%= keuze('model', 'D-GATE B (torsieveer achter)') %>>D-GATE B (torsieveer achter)</option>
+                <option<%= keuze('model', 'D-GATE T (trekveren)') %>>D-GATE T (trekveren)</option>
               </select>
             </label>
             <label>Paneel
               <select name="paneel">
                 <option value="">Weet ik nog niet</option>
-                <option>40 mm — glad</option>
-                <option>40 mm — Woodgrain</option>
-                <option>40 mm — Deep Mat</option>
-                <option>60 mm — glad (alleen D-GATE U)</option>
-                <option>60 mm — Woodgrain (alleen D-GATE U)</option>
+                <option<%= keuze('paneel', '40 mm — glad') %>>40 mm — glad</option>
+                <option<%= keuze('paneel', '40 mm — Woodgrain') %>>40 mm — Woodgrain</option>
+                <option<%= keuze('paneel', '40 mm — Deep Mat') %>>40 mm — Deep Mat</option>
+                <option<%= keuze('paneel', '60 mm — glad (alleen D-GATE U)') %>>60 mm — glad (alleen D-GATE U)</option>
+                <option<%= keuze('paneel', '60 mm — Woodgrain (alleen D-GATE U)') %>>60 mm — Woodgrain (alleen D-GATE U)</option>
               </select>
             </label>
           </div>
           <div class="veld-rij">
             <label>Kleur
-              <input type="text" name="kleur" placeholder="bijv. Antraciet RAL 7016 of Golden Oak">
+              <input type="text" name="kleur" placeholder="bijv. Antraciet RAL 7016 of Golden Oak" value="<%= v.kleur || '' %>">
             </label>
             <label>Bediening
               <select name="motor">
                 <option value="">Weet ik nog niet</option>
-                <option>Handbediend</option>
-                <option>Elektrisch met handzender</option>
-                <option>Elektrisch + smart home</option>
+                <option<%= keuze('motor', 'Handbediend') %>>Handbediend</option>
+                <option<%= keuze('motor', 'Elektrisch met handzender') %>>Elektrisch met handzender</option>
+                <option<%= keuze('motor', 'Elektrisch + smart home') %>>Elektrisch + smart home</option>
               </select>
             </label>
           </div>
           <label>Opmerkingen
-            <textarea name="opmerking" rows="4" placeholder="Bijv. huidige deur is een kanteldeur, beperkte ruimte boven de opening, gewenste beglazing…"></textarea>
+            <textarea name="opmerking" rows="4" placeholder="Bijv. huidige deur is een kanteldeur, beperkte ruimte boven de opening, gewenste beglazing…"><%= v.opmerking || '' %></textarea>
           </label>
+        </fieldset>
+
+        <fieldset class="som-veld">
+          <legend>Even controleren</legend>
+          <p class="som-uitleg">Zo weten we zeker dat je geen robot bent.</p>
+          <input type="hidden" name="som_token" value="<%= som.token %>">
+          <label for="somAntwoord">Hoeveel is <strong class="som-vraag"><%= som.vraag %></strong>? *</label>
+          <input type="number" id="somAntwoord" name="som_antwoord" required inputmode="numeric"
+                 autocomplete="off" placeholder="Vul de uitkomst in">
         </fieldset>
 
         <button type="submit" class="btn btn-primair btn-groot">Verstuur aanvraag</button>

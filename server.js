@@ -2,10 +2,12 @@
 // Node/Express/EJS — Railway ready
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
+const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.4.1'; // cache-busting ?v=
+const SITE_VERSION = '1.5.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -19,8 +21,38 @@ if (process.env.RESEND_API_KEY) {
   const { Resend } = require('resend');
   resend = new Resend(process.env.RESEND_API_KEY);
 }
-const OFFERTE_TO = process.env.OFFERTE_TO || 'info@maatwerkgaragedeur.nl';
+const OFFERTE_TO = process.env.OFFERTE_TO || 'd.degraaf@creditline.nl';
 const OFFERTE_FROM = process.env.OFFERTE_FROM || 'MaatwerkGaragedeur.nl <offerte@maatwerkgaragedeur.nl>';
+
+// ---------- Anti-bot rekensom ----------
+// Ondertekend token: geen sessie/opslag nodig, werkt ook met meerdere instances.
+// Zet FORM_SECRET als env-var, anders wordt er bij elke herstart een nieuwe gemaakt
+// (openstaande formulieren zijn dan na een deploy verlopen).
+const FORM_SECRET = process.env.FORM_SECRET || crypto.randomBytes(32).toString('hex');
+const SOM_GELDIG = 2 * 60 * 60 * 1000; // 2 uur — genoeg tijd om het formulier in te vullen
+
+function ondertekenSom(antwoord, geldigTot) {
+  return crypto.createHmac('sha256', FORM_SECRET).update(`${antwoord}.${geldigTot}`).digest('base64url');
+}
+
+function maakSom() {
+  const a = 1 + Math.floor(Math.random() * 9);
+  const b = 1 + Math.floor(Math.random() * 9);
+  const geldigTot = Date.now() + SOM_GELDIG;
+  const antwoord = a + b;
+  return { vraag: `${a} + ${b}`, token: `${antwoord}.${geldigTot}.${ondertekenSom(antwoord, geldigTot)}` };
+}
+
+function somKlopt(token, antwoord) {
+  const delen = String(token || '').split('.');
+  if (delen.length !== 3) return false;
+  const [verwacht, geldigTot, handtekening] = delen;
+  const juist = Buffer.from(ondertekenSom(verwacht, geldigTot));
+  const gegeven = Buffer.from(handtekening);
+  if (juist.length !== gegeven.length || !crypto.timingSafeEqual(juist, gegeven)) return false;
+  if (!(Number(geldigTot) > Date.now())) return false;
+  return String(antwoord || '').trim() === verwacht;
+}
 
 // Anthropic (AI inmeet-assistent) — vereist ANTHROPIC_API_KEY
 let anthropic = null;
@@ -182,11 +214,35 @@ const kleuren = [
   { naam: 'Staalblauw', hex: '#3d5566', cat: 'kleur' }
 ];
 
+// Zoekt de hex-code bij een vrij ingetypte kleurnaam ("antraciet ral 7016" -> #383e42),
+// zodat de e-mail het gekozen kleurtje echt kan tonen. Geen match? Dan null.
+function zoekKleurHex(tekst) {
+  const norm = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const t = norm(tekst);
+  if (!t) return null;
+  const genormaliseerd = kleuren.map(k => ({ ...k, n: norm(k.naam) }));
+  const exact = genormaliseerd.find(k => k.n === t);
+  if (exact) return exact.hex;
+  // klant typte meer dan de kleurnaam -> langste kleurnaam die erin voorkomt
+  const bevat = genormaliseerd.filter(k => t.includes(k.n)).sort((a, b) => b.n.length - a.n.length);
+  if (bevat.length) return bevat[0].hex;
+  // klant typte een deel -> kortste kleurnaam die ermee begint
+  const deel = genormaliseerd.filter(k => k.n.includes(t)).sort((a, b) => a.n.length - b.n.length);
+  return deel.length ? deel[0].hex : null;
+}
+
 // ---------- Routes ----------
 app.get('/', (req, res) => res.render('index', { modellen, kleuren, page: 'home' }));
 app.get('/modellen', (req, res) => res.render('modellen', { modellen, page: 'modellen' }));
 app.get('/kleuren', (req, res) => res.render('kleuren', { kleuren, page: 'kleuren' }));
-app.get('/offerte', (req, res) => res.render('offerte', { page: 'offerte', verzonden: false }));
+// Toont het formulier opnieuw met een verse rekensom en de al ingevulde waarden
+function toonFormulier(res, { status = 200, fout = null, waarden = {} } = {}) {
+  res.status(status).render('offerte', {
+    page: 'offerte', verzonden: false, fout, waarden, som: maakSom()
+  });
+}
+
+app.get('/offerte', (req, res) => toonFormulier(res));
 app.get('/privacy', (req, res) => res.render('privacy', { page: 'privacy' }));
 app.get('/inmeet-assistent', (req, res) => res.render('inmeet', { page: 'inmeet' }));
 
@@ -270,23 +326,7 @@ app.post('/offerte', async (req, res) => {
   const s = statsVoor(req.ip);
   const d = req.body;
 
-  // Honeypot: echte bezoekers vullen dit verborgen veld nooit in
-  if (d.website) {
-    registreerFout(s);
-    return res.render('offerte', { page: 'offerte', verzonden: true }); // bot denkt dat het gelukt is
-  }
-
-  if (geblokkeerd(s)) {
-    return res.status(429).render('offerte', { page: 'offerte', verzonden: false, fout: true });
-  }
-  snoei(s.offerte, UUR);
-  if (s.offerte.length >= LIMIET.offertePerUur) {
-    registreerOvertreding(s);
-    return res.status(429).render('offerte', { page: 'offerte', verzonden: false, fout: true });
-  }
-  s.offerte.push(Date.now());
-
-  const nette = (x) => String(x || '').slice(0, 500);
+  const nette = (x) => String(x || '').trim().slice(0, 500);
   const aanvraag = {
     naam: nette(d.naam),
     email: nette(d.email),
@@ -301,41 +341,91 @@ app.post('/offerte', async (req, res) => {
     opmerking: nette(d.opmerking)
   };
 
-  const html = `
-    <h2>Nieuwe offerteaanvraag — MaatwerkGaragedeur.nl</h2>
-    <table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
-      ${Object.entries(aanvraag).map(([k, v]) =>
-        `<tr><td style="border:1px solid #ddd;font-weight:bold;text-transform:capitalize">${k}</td><td style="border:1px solid #ddd">${v || '—'}</td></tr>`
-      ).join('')}
-    </table>`;
+  // Honeypot: echte bezoekers vullen dit verborgen veld nooit in
+  if (d.website) {
+    registreerFout(s);
+    return res.render('offerte', { page: 'offerte', verzonden: true }); // bot denkt dat het gelukt is
+  }
+
+  if (geblokkeerd(s)) {
+    return toonFormulier(res, {
+      status: 429, waarden: aanvraag,
+      fout: 'Dit IP-adres is tijdelijk geblokkeerd wegens misbruik. Bel ons gerust, dan regelen we het telefonisch.'
+    });
+  }
+  snoei(s.offerte, UUR);
+  if (s.offerte.length >= LIMIET.offertePerUur) {
+    registreerOvertreding(s);
+    return toonFormulier(res, {
+      status: 429, waarden: aanvraag,
+      fout: 'Je hebt kort achter elkaar meerdere aanvragen verstuurd. Probeer het over een uur nog eens.'
+    });
+  }
+
+  // Anti-bot rekensom
+  if (!somKlopt(d.som_token, d.som_antwoord)) {
+    registreerFout(s);
+    return toonFormulier(res, {
+      status: 400, waarden: aanvraag,
+      fout: 'De uitkomst van de rekensom klopte niet (of het formulier stond te lang open). Vul de nieuwe som hieronder in.'
+    });
+  }
+
+  if (!aanvraag.naam || !aanvraag.email || !aanvraag.postcode || !aanvraag.breedte || !aanvraag.hoogte) {
+    return toonFormulier(res, {
+      status: 400, waarden: aanvraag,
+      fout: 'Niet alle verplichte velden waren ingevuld. Vul ze alsnog in en verstuur opnieuw.'
+    });
+  }
+
+  s.offerte.push(Date.now());
+
+  const kleurHex = zoekKleurHex(aanvraag.kleur);
+  const intern = offerteIntern({
+    ...aanvraag,
+    kleurHex,
+    tijdstip: new Date().toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam' }),
+    ip: req.ip
+  });
+  const bevestiging = offerteBevestiging({ ...aanvraag, kleurHex });
 
   try {
-    if (resend) {
-      await resend.emails.send({
-        from: OFFERTE_FROM,
-        to: OFFERTE_TO,
-        reply_to: aanvraag.email || undefined,
-        subject: `Offerteaanvraag garagedeur — ${aanvraag.naam || 'onbekend'} (${aanvraag.postcode || '?'})`,
-        html
-      });
-      // Bevestiging naar klant
-      if (aanvraag.email) {
-        await resend.emails.send({
-          from: OFFERTE_FROM,
-          to: aanvraag.email,
-          subject: 'We hebben je aanvraag ontvangen — MaatwerkGaragedeur.nl',
-          html: `<p>Beste ${aanvraag.naam || 'klant'},</p>
-                 <p>Bedankt voor je offerteaanvraag. We nemen binnen 1 werkdag contact met je op met een vrijblijvende prijsopgave voor je nieuwe Drutex D-GATE garagedeur.</p>
-                 <p>Met vriendelijke groet,<br>MaatwerkGaragedeur.nl</p>`
-        });
-      }
-    } else {
+    if (!resend) {
       console.log('OFFERTE (geen RESEND_API_KEY ingesteld):', aanvraag);
+      return res.render('offerte', { page: 'offerte', verzonden: true });
     }
+
+    // De mail naar onszelf is leidend: mislukt die, dan is de aanvraag écht niet aangekomen.
+    const { error } = await resend.emails.send({
+      from: OFFERTE_FROM,
+      to: OFFERTE_TO,
+      reply_to: aanvraag.email || undefined,
+      subject: intern.subject,
+      html: intern.html
+    });
+    if (error) throw new Error(error.message || 'Resend weigerde de aanvraagmail');
+
+    // Bevestiging naar de klant — mag stilletjes falen, de aanvraag is al binnen.
+    try {
+      const klant = await resend.emails.send({
+        from: OFFERTE_FROM,
+        to: aanvraag.email,
+        reply_to: OFFERTE_TO,
+        subject: bevestiging.subject,
+        html: bevestiging.html
+      });
+      if (klant.error) console.error('Bevestigingsmail mislukt:', klant.error);
+    } catch (err) {
+      console.error('Bevestigingsmail mislukt:', err.message);
+    }
+
     res.render('offerte', { page: 'offerte', verzonden: true });
   } catch (err) {
     console.error('Offerte verzendfout:', err);
-    res.status(500).render('offerte', { page: 'offerte', verzonden: false, fout: true });
+    toonFormulier(res, {
+      status: 500, waarden: aanvraag,
+      fout: 'Er ging iets mis bij het versturen. Probeer het zo nog eens, of mail ons rechtstreeks op ' + OFFERTE_TO + '.'
+    });
   }
 });
 

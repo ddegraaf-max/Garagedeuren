@@ -442,6 +442,18 @@ a { color: inherit; }
   outline: none; border-color: var(--accent-diep);
 }
 .form-klein { font-size: 0.85rem; color: var(--inkt-zacht); margin-top: 1rem; }
+
+/* anti-bot rekensom */
+.som-veld { border-color: var(--accent) !important; }
+.som-uitleg { font-size: 0.88rem; color: var(--inkt-zacht); margin-bottom: 0.9rem; }
+.offerte-form .som-veld label { margin-bottom: 0.35rem; }
+.som-vraag {
+  font-family: 'Archivo', sans-serif; font-weight: 800;
+  font-size: 1.15rem; letter-spacing: 0.02em;
+  background: var(--papier-donker); border-radius: 7px;
+  padding: 0.1rem 0.5rem; white-space: nowrap;
+}
+.offerte-form .som-veld input { max-width: 220px; margin-bottom: 0.3rem; }
 .melding { border-radius: var(--radius); padding: 2rem; }
 .melding-ok { background: #eaf4e6; border: 1.5px solid #9dc98b; }
 .melding-ok h2 { margin-bottom: 0.6rem; }
