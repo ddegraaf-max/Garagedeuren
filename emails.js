@@ -35,10 +35,12 @@ const heeft = (x) => String(x == null ? '' : x).trim() !== '';
 
 // Beeldmerk: drie paneelstrepen, net als het logo op de site
 function logoMerk(paneelKleur) {
+  // width óók als attribuut op elke cel: zonder dat klapt de balk in bij clients
+  // die de tabelbreedte negeren, want de inhoud (&nbsp; op font-size:0) is 0 breed.
   const streep = (kleur) =>
-    `<tr><td height="5" bgcolor="${kleur}" style="height:5px;line-height:5px;font-size:0;border-radius:2px;">&nbsp;</td></tr>
-     <tr><td height="3" style="height:3px;line-height:3px;font-size:0;">&nbsp;</td></tr>`;
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="30" style="width:30px;">
+    `<tr><td width="30" height="5" bgcolor="${kleur}" style="width:30px;height:5px;line-height:5px;font-size:0;mso-line-height-rule:exactly;border-radius:2px;">&nbsp;</td></tr>
+     <tr><td width="30" height="3" style="width:30px;height:3px;line-height:3px;font-size:0;mso-line-height-rule:exactly;">&nbsp;</td></tr>`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="30" style="width:30px;min-width:30px;">
     ${streep(KLEUR.accent)}${streep(paneelKleur)}${streep(paneelKleur)}</table>`;
 }
 
@@ -61,7 +63,10 @@ function deurVisual(hex, profiel) {
   const donker = mengKleur(hex, '#000000', 0.32);
   const licht = mengKleur(hex, '#ffffff', 0.18);
   const naad = mengKleur(hex, '#000000', 0.5);
-  const rij = (h, kleur) => `<tr><td height="${h}" bgcolor="${kleur}" style="height:${h}px;line-height:${h}px;font-size:0;">&nbsp;</td></tr>`;
+  // Elke cel krijgt een expliciete width; anders valt de deur op mobiel samen tot
+  // een streepje, omdat de inhoud (&nbsp; op font-size:0) geen breedte heeft.
+  const PANEELBREEDTE = 250;
+  const rij = (h, kleur) => `<tr><td width="${PANEELBREEDTE}" height="${h}" bgcolor="${kleur}" style="width:${PANEELBREEDTE}px;max-width:100%;height:${h}px;line-height:${h}px;font-size:0;mso-line-height-rule:exactly;">&nbsp;</td></tr>`;
   const groef = () => rij(3, donker) + rij(2, licht);
 
   let binnenkant;
@@ -71,16 +76,17 @@ function deurVisual(hex, profiel) {
 
   const paneel = (i) => (i ? rij(2, naad) : '') + binnenkant;
 
+  const BUITEN = PANEELBREEDTE + 14; // 7px kozijn aan beide kanten
   return `
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="264" style="width:264px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="${BUITEN}" style="width:${BUITEN}px;max-width:100%;">
     <tr>
-      <td bgcolor="#2c3136" style="background-color:#2c3136;padding:7px;border-radius:5px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <td width="${BUITEN}" bgcolor="#2c3136" style="width:${BUITEN}px;max-width:100%;background-color:#2c3136;padding:7px;border-radius:5px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${PANEELBREEDTE}" style="width:${PANEELBREEDTE}px;max-width:100%;">
           ${paneel(0)}${paneel(1)}${paneel(2)}${paneel(3)}
         </table>
       </td>
     </tr>
-    <tr><td height="6" bgcolor="#b9b2a4" style="height:6px;line-height:6px;font-size:0;border-radius:0 0 4px 4px;">&nbsp;</td></tr>
+    <tr><td width="${BUITEN}" height="6" bgcolor="#b9b2a4" style="width:${BUITEN}px;max-width:100%;height:6px;line-height:6px;font-size:0;mso-line-height-rule:exactly;border-radius:0 0 4px 4px;">&nbsp;</td></tr>
   </table>`;
 }
 
@@ -122,7 +128,7 @@ function kop() {
       </table>
     </td>
   </tr>
-  <tr><td bgcolor="${KLEUR.accent}" style="background-color:${KLEUR.accent};height:4px;line-height:4px;font-size:0;">&nbsp;</td></tr>`;
+  <tr><td width="600" height="4" bgcolor="${KLEUR.accent}" style="width:600px;max-width:100%;background-color:${KLEUR.accent};height:4px;line-height:4px;font-size:0;mso-line-height-rule:exactly;">&nbsp;</td></tr>`;
 }
 
 function voet() {
