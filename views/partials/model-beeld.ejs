@@ -1,0 +1,9 @@
+<%# Deurfoto die bij hover wisselt naar een close-up van het veersysteem.
+    Verwacht `m` (een model uit server.js). Gebruikt op home, /modellen en het offerteformulier. %>
+<span class="model-beeld<%= m.detail ? ' met-detail' : '' %>">
+  <img src="<%= m.afb %>" alt="<%= m.naam %> — <%= m.sub %>" loading="lazy" width="960" height="540">
+  <% if (m.detail) { %>
+    <img class="model-detailfoto" src="<%= m.detail %>" alt="Veersysteem van de <%= m.naam %> van dichtbij" loading="lazy">
+    <span class="model-loep" aria-hidden="true">Veersysteem</span>
+  <% } %>
+</span>

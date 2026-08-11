@@ -120,6 +120,7 @@
     <div class="model-grid">
       <% modellen.forEach(m => { %>
         <article class="model-kaart">
+          <%- include('partials/model-beeld', { m }) %>
           <div class="model-kop">
             <h3><%= m.naam %></h3>
             <span class="model-sub"><%= m.sub %></span>

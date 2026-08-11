@@ -110,15 +110,9 @@
               <span class="model-sub">Wij adviseren op basis van je latei en zijruimte</span>
             </label>
             <% modellen.forEach(mo => { const waarde = `${mo.naam} (${mo.sub.toLowerCase()})`; %>
-              <label class="model-tegel<%= mo.detail ? ' met-detail' : '' %>">
+              <label class="model-tegel">
                 <input type="radio" name="model" value="<%= waarde %>"<%= v.model === waarde ? ' checked' : '' %>>
-                <span class="model-beeld">
-                  <img src="<%= mo.afb %>" alt="<%= mo.naam %> — <%= mo.sub %>" loading="lazy" width="960" height="540">
-                  <% if (mo.detail) { %>
-                    <img class="model-detailfoto" src="<%= mo.detail %>" alt="Veersysteem van de <%= mo.naam %> van dichtbij" loading="lazy">
-                    <span class="model-loep" aria-hidden="true">Veersysteem</span>
-                  <% } %>
-                </span>
+                <%- include('partials/model-beeld', { m: mo }) %>
                 <span class="model-naam"><%= mo.naam %></span>
                 <span class="model-sub"><%= mo.sub %></span>
                 <span class="model-tekst"><%= mo.kort %></span>
