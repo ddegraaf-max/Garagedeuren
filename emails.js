@@ -88,7 +88,8 @@ function deurVisual(hex, profiel) {
 function deurBlok(a, { compact = false } = {}) {
   if (!a.kleurHex) return '';
   // per stuk escapen; het scheidingsteken is bewust ruwe HTML
-  const onder = [a.kleur, a.afwerking].filter(heeft).map(esc).join(' &middot; ');
+  // De tekening laat kleur en groeven zien, dus die twee benoemen we eronder
+  const onder = [a.kleur, a.profilering].filter(heeft).map(esc).join(' &middot; ');
   return `
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${KLEUR.papier}" style="background-color:${KLEUR.papier};border:1px solid ${KLEUR.lijn};border-radius:11px;margin:${compact ? '4px 0 6px' : '0 0 6px'};">
     <tr><td align="center" style="padding:${compact ? '18px' : '22px'} 18px;">
@@ -296,6 +297,7 @@ function offerteIntern(a) {
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
+      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }]
     ])}
 
@@ -358,6 +360,7 @@ function offerteBevestiging(a) {
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
+      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }],
       ['Bediening', a.motor],
       ['Opmerkingen', a.opmerking]
