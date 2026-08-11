@@ -18,6 +18,19 @@ Draait op http://localhost:3000
 | `OFFERTE_FROM` | nee | Afzender (Resend geverifieerd domein vereist) |
 | `FORM_SECRET` | aanbevolen | Ondertekent de anti-bot rekensom. Niet gezet? Dan wordt er bij elke herstart een nieuwe gemaakt en zijn openstaande formulieren na een deploy verlopen. |
 | `SITE_URL` | nee | Basis-URL in e-maillinks (default: https://maatwerkgaragedeur.nl) |
+| `INMEET_MOCK` | nee | Op `1` geeft de inmeet-assistent een vast voorbeeldantwoord in plaats van een echte AI-analyse. Handig om de weergave en de maatlijnen te testen zonder API-key of kosten. **Nooit op productie aanzetten.** |
+
+## AI inmeet-assistent
+De klant uploadt een foto; die gaat alleen in het geheugen naar Claude en wordt
+niet opgeslagen. Het model antwoordt met vast omlijnd JSON: deurtype, observaties,
+meetinstructies, modeladvies, aandachtspunten en `opening` — de garageopening als
+verhoudingen (0–1) van de fotobreedte en -hoogte.
+
+Over die `opening` tekent de browser maatlijnen op de foto zelf (breedte, hoogte,
+latei, zijruimte). De server controleert de coördinaten eerst: geen getallen tussen
+0 en 1, of een vlak kleiner dan 5%, betekent geen lijnen. Kan het model de opening
+niet betrouwbaar aanwijzen, dan hoort het `null` terug te geven — liever geen lijnen
+dan lijnen op de verkeerde plek.
 
 ## Offerteformulier
 - **Model, afwerking en kleur** kiest de klant uit vaste lijsten in server.js

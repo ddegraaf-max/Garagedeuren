@@ -800,3 +800,9 @@ a { color: inherit; }
 /* tijdens de analyse blijft het uploadblok staan (anders klapt de pagina in
    en springt de browser naar beneden), maar is het niet meer bedienbaar */
 .inmeet-upload.bezig { opacity: 0.45; pointer-events: none; transition: opacity 0.2s; }
+
+/* maatlijnen over de foto van de klant */
+.res-foto-intro { color: var(--inkt-zacht); font-size: 0.92rem; margin-bottom: 0.9rem; }
+.meet-doek { position: relative; line-height: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--lijn); }
+.meet-doek img { display: block; width: 100%; height: auto; }
+.meet-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
