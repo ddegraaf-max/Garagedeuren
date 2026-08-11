@@ -546,7 +546,7 @@ a { color: inherit; }
    ook als een bronfoto ooit een ander formaat heeft */
 .offerte-form .afwerking-tegel img {
   display: block; width: 100%; height: auto; margin-bottom: 0.4rem;
-  aspect-ratio: 19 / 15; object-fit: contain;
+  aspect-ratio: 76 / 104; object-fit: cover;
   border-radius: 8px; background: var(--wit);
 }
 .afwerking-rooster { align-items: stretch; }
