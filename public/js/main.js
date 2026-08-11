@@ -106,10 +106,24 @@
       modelTegels.forEach(function (tegel) {
         var maxB = parseInt(tegel.dataset.maxBreedte, 10);
         var maxH = parseInt(tegel.dataset.maxHoogte, 10);
-        var telaag = (b > 0 && b > maxB) || (h > 0 && h > maxH);
+        // alleen de maximale deurmaat telt hier — niet de latei, dat is een
+        // andere maat (ruimte bóven de opening, in mm)
+        var teBreed = b > 0 && b > maxB;
+        var teHoog = h > 0 && h > maxH;
+        var telaag = teBreed || teHoog;
         tegel.classList.toggle('niet-mogelijk', telaag);
         var melding = tegel.querySelector('.model-tegroot');
-        if (melding) melding.hidden = !telaag;
+        if (melding) {
+          melding.hidden = !telaag;
+          if (telaag) {
+            // benoem precies welke grens overschreden wordt
+            melding.textContent = teBreed && teHoog
+              ? 'Max ' + maxB + ' × ' + maxH + ' cm — jouw maat is groter'
+              : teBreed
+                ? 'Max ' + maxB + ' cm breed — jij vulde ' + b + ' cm in'
+                : 'Max ' + maxH + ' cm hoog — jij vulde ' + h + ' cm in';
+          }
+        }
         var radio = tegel.querySelector('input[name="model"]');
         if (radio) {
           radio.disabled = telaag;

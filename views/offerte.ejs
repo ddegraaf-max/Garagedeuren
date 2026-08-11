@@ -128,10 +128,11 @@
                 <span class="model-sub"><%= mo.sub %></span>
                 <span class="model-tekst"><%= mo.kort %></span>
                 <span class="model-spec">
-                  Tot <%= mo.maxCm.breedte %> &times; <%= mo.maxCm.hoogte %> cm &middot; paneel tot <%= mo.specs.gewicht %><br>
-                  Latei vanaf <%= mo.specs.latei %>
+                  <strong>Deur tot <%= mo.maxCm.breedte %> &times; <%= mo.maxCm.hoogte %> cm</strong><br>
+                  Paneel tot <%= mo.specs.gewicht %><br>
+                  <span class="model-latei">Nodig boven de opening: <%= mo.specs.latei %></span>
                 </span>
-                <span class="model-tegroot" hidden>Te klein voor de maat die je invulde</span>
+                <span class="model-tegroot" hidden></span>
               </label>
             <% }) %>
           </div>

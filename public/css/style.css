@@ -794,3 +794,5 @@ a { color: inherit; }
   display: block; margin-top: 0.4rem; font-size: 0.72rem; font-weight: 700;
   color: #a3402c; background: #f9e8e4; border-radius: 6px; padding: 0.25rem 0.45rem;
 }
+
+.model-latei { color: var(--inkt-zacht); opacity: 0.85; }
