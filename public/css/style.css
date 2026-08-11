@@ -362,6 +362,15 @@ a { color: inherit; }
 .pagina-intro { color: var(--inkt-zacht); font-size: 1.1rem; max-width: 64ch; }
 
 .model-detail-lijst { display: grid; gap: 1.4rem; }
+.model-detail-beeld { margin: 0 0 1.4rem; }
+.model-detail-beeld img {
+  display: block; width: 100%; height: auto;
+  background: #fff; border: 1px solid var(--lijn); border-radius: 10px;
+}
+.model-detail-beeld figcaption {
+  font-size: 0.82rem; color: var(--inkt-zacht);
+  margin-top: 0.5rem; text-align: center;
+}
 .model-detail {
   background: var(--wit); border: 1px solid var(--lijn);
   border-radius: var(--radius); padding: 2.2rem 2rem;
@@ -472,7 +481,7 @@ a { color: inherit; }
   font-weight: 400; font-size: 1rem;
 }
 .offerte-form .kleur-tegel input,
-.offerte-form .paneel-knop input {
+.offerte-form .afwerking-tegel input {
   position: absolute; opacity: 0; width: 1px; height: 1px;
   margin: 0; padding: 0; display: block; pointer-events: none;
 }
@@ -498,20 +507,64 @@ a { color: inherit; }
 }
 .offerte-form .kleur-geen:has(input:checked) { border-color: var(--accent-diep); background: var(--papier); }
 
-/* profileringkeuze */
-.paneel-keuzes { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1.4rem; }
-.offerte-form .paneel-knop {
-  position: relative; display: inline-block; margin-bottom: 0;
-  padding: 0.6rem 1.1rem; border: 1.5px solid var(--lijn); border-radius: 999px;
+/* paneelafwerking — foto's uit de Drutex-brochure */
+.afwerking-rooster {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem; margin-bottom: 1.5rem;
+}
+.offerte-form .afwerking-tegel {
+  position: relative; display: block; margin-bottom: 0; padding: 0.5rem;
+  border: 1.5px solid var(--lijn); border-radius: 12px;
+  background: var(--wit); cursor: pointer; text-align: center;
+  font-weight: 400; font-size: 1rem; transition: 0.15s;
+}
+.offerte-form .afwerking-tegel:hover { border-color: var(--accent-diep); }
+.offerte-form .afwerking-tegel:has(input:checked) {
+  border-color: var(--accent-diep); background: var(--papier);
+  box-shadow: 0 0 0 2px rgba(217, 127, 26, 0.25);
+}
+.offerte-form .afwerking-tegel img {
+  display: block; width: 100%; height: auto; margin-bottom: 0.4rem;
+  border-radius: 8px; background: var(--wit);
+}
+.afwerking-naam { display: block; font-size: 0.85rem; font-weight: 700; color: var(--inkt); }
+.afwerking-code {
+  display: inline-block; font-size: 0.66rem; font-weight: 800;
+  color: var(--inkt-zacht); background: var(--papier-donker);
+  border-radius: 4px; padding: 0 0.28rem; vertical-align: 1px;
+}
+.afwerking-kort { display: block; font-size: 0.72rem; line-height: 1.3; color: var(--inkt-zacht); margin-top: 0.12rem; }
+
+/* modelkeuze — renders uit de Drutex-brochure */
+.model-rooster {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.7rem; margin-bottom: 1.4rem;
+}
+.offerte-form .model-tegel {
+  position: relative; display: block; margin-bottom: 0; padding: 0.6rem;
+  border: 1.5px solid var(--lijn); border-radius: 12px;
   background: var(--wit); cursor: pointer;
-  font-size: 0.88rem; font-weight: 600; color: var(--inkt); transition: 0.15s;
+  font-weight: 400; font-size: 1rem; transition: 0.15s;
 }
-.offerte-form .paneel-knop:hover { border-color: var(--accent-diep); }
-.offerte-form .paneel-knop:has(input:checked),
-.offerte-form .paneel-knop.actief {
-  border-color: var(--accent-diep); background: var(--accent); color: var(--antraciet);
+.offerte-form .model-tegel:hover { border-color: var(--accent-diep); }
+.offerte-form .model-tegel:has(input:checked) {
+  border-color: var(--accent-diep); background: var(--papier);
+  box-shadow: 0 0 0 2px rgba(217, 127, 26, 0.25);
 }
-.offerte-form .paneel-knop input:focus-visible ~ span { outline: 2px solid var(--inkt); outline-offset: 3px; }
+.offerte-form .model-tegel img {
+  display: block; width: 100%; height: auto; margin-bottom: 0.45rem;
+  border-radius: 8px; background: #fff;
+}
+.offerte-form .model-tegel input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.model-naam { display: block; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 0.98rem; color: var(--inkt); }
+.model-sub { display: block; font-size: 0.8rem; color: var(--inkt-zacht); margin-top: 0.1rem; }
+.model-spec { display: block; font-size: 0.72rem; color: var(--inkt-zacht); margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px solid var(--lijn); }
+.model-tegel-geen { display: flex !important; flex-direction: column; justify-content: center; text-align: center; }
+
+@media (max-width: 620px) {
+  .afwerking-rooster { grid-template-columns: repeat(3, 1fr); gap: 0.45rem; }
+  .afwerking-kort { display: none; }
+}
 
 @media (max-width: 620px) {
   .kleur-veld .kleur-rooster { grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); }

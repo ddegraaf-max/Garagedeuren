@@ -20,6 +20,10 @@
     <div class="model-detail-lijst">
       <% modellen.forEach((m, i) => { %>
         <article class="model-detail" id="<%= m.slug %>">
+          <figure class="model-detail-beeld">
+            <img src="<%= m.afb %>" alt="<%= m.naam %> — <%= m.sub %>, veersysteem zichtbaar" loading="lazy" width="960" height="540">
+            <figcaption><%= m.specs.veer %></figcaption>
+          </figure>
           <div class="model-detail-info">
             <span class="model-index">0<%= i + 1 %></span>
             <h2><%= m.naam %></h2>

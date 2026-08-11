@@ -44,7 +44,7 @@ function logoMerk(paneelKleur) {
 
 // --- Schematische deur, opgebouwd uit tabelcellen ---
 // SVG rendert niet in Gmail/Outlook, dus tekenen we de deur met gekleurde rijen.
-// Toont alleen wat de klant écht heeft gekozen: kleur en profilering.
+// Toont alleen wat de klant écht heeft gekozen: kleur en paneelafwerking.
 function mengKleur(hex, doel, factor) {
   const lees = (h) => {
     const s = String(h).replace('#', '');
@@ -87,12 +87,13 @@ function deurVisual(hex, profiel) {
 // Deurblok met bijschrift — alleen tonen als de klant echt een kleur koos
 function deurBlok(a, { compact = false } = {}) {
   if (!a.kleurHex) return '';
-  const onder = [a.kleur, a.profilering].filter(heeft).join(' &middot; ');
+  // per stuk escapen; het scheidingsteken is bewust ruwe HTML
+  const onder = [a.kleur, a.afwerking].filter(heeft).map(esc).join(' &middot; ');
   return `
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${KLEUR.papier}" style="background-color:${KLEUR.papier};border:1px solid ${KLEUR.lijn};border-radius:11px;margin:${compact ? '4px 0 6px' : '0 0 6px'};">
     <tr><td align="center" style="padding:${compact ? '18px' : '22px'} 18px;">
       ${deurVisual(a.kleurHex, a.profiel)}
-      <p style="margin:13px 0 0;font-family:${FONT};font-size:13px;line-height:20px;color:${KLEUR.inkt};font-weight:600;">${esc(onder)}</p>
+      <p style="margin:13px 0 0;font-family:${FONT};font-size:13px;line-height:20px;color:${KLEUR.inkt};font-weight:600;">${onder}</p>
       <p style="margin:3px 0 0;font-family:${FONT};font-size:11px;line-height:17px;color:${KLEUR.inktZacht};">Schematische weergave van je keuze &mdash; geen foto van je eigen garage.</p>
     </td></tr>
   </table>`;
@@ -287,7 +288,6 @@ function offerteIntern(a) {
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
-      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }]
     ])}
 
@@ -350,7 +350,6 @@ function offerteBevestiging(a) {
       ['Afmeting', afmeting],
       ['Model', a.model || 'Advies gewenst'],
       ['Paneel', a.paneel],
-      ['Profilering', a.profilering],
       ['Kleur', a.kleur, { voor: kleurStip(a.kleurHex) }],
       ['Bediening', a.motor],
       ['Opmerkingen', a.opmerking]

@@ -74,16 +74,9 @@
       });
     }
 
-    // Beginstand herstellen — nodig als het formulier na een fout opnieuw wordt getoond
-    var gekozenTegel = offerteForm.querySelector('.kleur-tegel input:checked');
-    if (gekozenTegel) {
-      var tegel = gekozenTegel.closest('.kleur-tegel');
-      tegel.classList.add('actief');
-      zetKleur(tegel.dataset.hex, tegel.dataset.naam);
-    }
-    var gekozenProfiel = offerteForm.querySelector('.paneel-knop input:checked');
-    if (gekozenProfiel) {
-      var profiel = gekozenProfiel.closest('.paneel-knop').dataset.profiel;
+    // Paneelafwerking bepaalt het reliëf op de preview
+    // (Smooth = geen groeven, Woodgrain = laag, Deep Mat = hoog)
+    function zetProfiel(profiel) {
       document.querySelectorAll('.profiel-hoog').forEach(function (g) {
         g.style.display = profiel === 'hoog' ? '' : 'none';
       });
@@ -91,15 +84,29 @@
         g.style.display = profiel === 'laag' ? '' : 'none';
       });
     }
+
+    offerteForm.querySelectorAll('.afwerking-tegel').forEach(function (t) {
+      t.addEventListener('click', function () { zetProfiel(t.dataset.profiel); });
+    });
+
+    // Beginstand herstellen — nodig als het formulier na een fout opnieuw wordt getoond
+    var gekozenTegel = offerteForm.querySelector('.kleur-tegel input:checked');
+    if (gekozenTegel) {
+      var tegel = gekozenTegel.closest('.kleur-tegel');
+      tegel.classList.add('actief');
+      zetKleur(tegel.dataset.hex, tegel.dataset.naam);
+    }
+    var gekozenAfwerking = offerteForm.querySelector('.afwerking-tegel input:checked');
+    if (gekozenAfwerking) zetProfiel(gekozenAfwerking.closest('.afwerking-tegel').dataset.profiel);
   }
 
-  // Model prefill via ?model= op offertepagina
+  // Model prefill via ?model= op de offertepagina (link vanaf /modellen).
+  // De modelkeuze is een set radio's, geen select meer.
   var params = new URLSearchParams(window.location.search);
   var model = params.get('model');
-  var select = document.getElementById('modelSelect');
-  if (model && select) {
-    Array.prototype.forEach.call(select.options, function (o) {
-      if (o.text.indexOf(model) === 0) select.value = o.value || o.text;
+  if (model) {
+    document.querySelectorAll('.model-tegel input[name="model"]').forEach(function (r) {
+      if (r.value.indexOf(model) === 0) r.checked = true;
     });
   }
 })();

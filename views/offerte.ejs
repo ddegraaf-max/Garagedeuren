@@ -58,20 +58,22 @@
         </fieldset>
 
         <fieldset class="kleur-veld">
-          <legend>Kleur &amp; profilering <span class="optioneel">(optioneel — je ziet het direct)</span></legend>
+          <legend>Kleur &amp; afwerking <span class="optioneel">(optioneel — je ziet het direct)</span></legend>
 
           <div class="offerte-preview">
             <%- include('partials/deur-svg', { metOpties: false }) %>
             <p class="preview-hint">Indicatieve weergave. Tijdens de gratis inmeting laten we echte kleurstalen zien.</p>
           </div>
 
-          <span class="optie-label">Profilering van de panelen</span>
-          <div class="paneel-keuzes">
-            <% profileringen.forEach((p, i) => {
-                 const aan = v.profilering ? v.profilering === p.naam : i === 0; %>
-              <label class="paneel-knop<%= aan ? ' actief' : '' %>" data-profiel="<%= p.profiel %>">
-                <input type="radio" name="profilering" value="<%= p.naam %>"<%= aan ? ' checked' : '' %>>
-                <span><%= p.naam %></span>
+          <span class="optie-label">Paneelafwerking</span>
+          <div class="afwerking-rooster">
+            <% afwerkingen.forEach((a, i) => {
+                 const aan = v.afwerking ? v.afwerking === a.naam : i === 1; %>
+              <label class="afwerking-tegel" data-profiel="<%= a.profiel %>">
+                <input type="radio" name="afwerking" value="<%= a.naam %>"<%= aan ? ' checked' : '' %>>
+                <img src="<%= a.afb %>" alt="Paneel <%= a.naam %>" loading="lazy" width="337" height="260">
+                <span class="afwerking-naam"><%= a.naam %> <span class="afwerking-code"><%= a.code %></span></span>
+                <span class="afwerking-kort"><%= a.kort %></span>
               </label>
             <% }) %>
           </div>
@@ -97,26 +99,32 @@
 
         <fieldset>
           <legend>Je voorkeuren <span class="optioneel">(optioneel — wij adviseren graag)</span></legend>
-          <div class="veld-rij">
-            <label>Model
-              <select name="model" id="modelSelect">
-                <option value="">Weet ik nog niet / advies gewenst</option>
-                <option<%= keuze('model', 'D-GATE U (torsieveer vóór)') %>>D-GATE U (torsieveer vóór)</option>
-                <option<%= keuze('model', 'D-GATE B (torsieveer achter)') %>>D-GATE B (torsieveer achter)</option>
-                <option<%= keuze('model', 'D-GATE T (trekveren)') %>>D-GATE T (trekveren)</option>
-              </select>
+          <span class="optie-label">Model <span class="optioneel">— het verschil zit in de veer, niet in het aanzicht</span></span>
+          <div class="model-rooster">
+            <label class="model-tegel model-tegel-geen">
+              <input type="radio" name="model" value=""<%= v.model ? '' : ' checked' %>>
+              <span class="model-naam">Weet ik nog niet</span>
+              <span class="model-sub">Wij adviseren op basis van je latei en zijruimte</span>
             </label>
-            <label>Paneeldikte &amp; afwerking
-              <select name="paneel">
-                <option value="">Weet ik nog niet</option>
-                <option<%= keuze('paneel', '40 mm — glad') %>>40 mm — glad</option>
-                <option<%= keuze('paneel', '40 mm — Woodgrain') %>>40 mm — Woodgrain</option>
-                <option<%= keuze('paneel', '40 mm — Deep Mat') %>>40 mm — Deep Mat</option>
-                <option<%= keuze('paneel', '60 mm — glad (alleen D-GATE U)') %>>60 mm — glad (alleen D-GATE U)</option>
-                <option<%= keuze('paneel', '60 mm — Woodgrain (alleen D-GATE U)') %>>60 mm — Woodgrain (alleen D-GATE U)</option>
-              </select>
-            </label>
+            <% modellen.forEach(mo => { const waarde = `${mo.naam} (${mo.sub.toLowerCase()})`; %>
+              <label class="model-tegel">
+                <input type="radio" name="model" value="<%= waarde %>"<%= v.model === waarde ? ' checked' : '' %>>
+                <img src="<%= mo.afb %>" alt="<%= mo.naam %> — <%= mo.sub %>" loading="lazy" width="960" height="540">
+                <span class="model-naam"><%= mo.naam %></span>
+                <span class="model-sub"><%= mo.sub %></span>
+                <span class="model-spec">Latei vanaf <%= mo.specs.latei %> &middot; tot <%= mo.specs.gewicht %></span>
+              </label>
+            <% }) %>
           </div>
+
+          <label>Paneeldikte
+            <select name="dikte">
+              <option value="">Weet ik nog niet</option>
+              <% diktes.forEach(dk => { %>
+                <option<%= keuze('dikte', dk) %>><%= dk %></option>
+              <% }) %>
+            </select>
+          </label>
           <label>Bediening
             <select name="motor">
               <option value="">Weet ik nog niet</option>

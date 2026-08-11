@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.6.0'; // cache-busting ?v=
+const SITE_VERSION = '1.7.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -143,6 +143,7 @@ app.use((req, res, next) => {
 const modellen = [
   {
     slug: 'd-gate-u',
+    afb: '/img/d-gate-u.jpg',
     naam: 'D-GATE U',
     sub: 'Torsieveer vóór',
     kort: 'De allrounder. Torsieveer aan de voorzijde, geschikt voor panelen tot 250 kg. Robuust, betrouwbaar en als enige leverbaar met het extra dikke 60 mm paneel.',
@@ -157,6 +158,7 @@ const modellen = [
   },
   {
     slug: 'd-gate-b',
+    afb: '/img/d-gate-b.jpg',
     naam: 'D-GATE B',
     sub: 'Torsieveer achter',
     kort: 'De stille kracht. Torsieveer aan de achterzijde voor extra soepel en stil openen — ideaal als er weinig ruimte boven de opening (latei) is.',
@@ -170,6 +172,7 @@ const modellen = [
   },
   {
     slug: 'd-gate-t',
+    afb: '/img/d-gate-t.jpg',
     naam: 'D-GATE T',
     sub: 'Trekveren',
     kort: 'De slimme instapper. Trekveren verticaal in het kozijn verdelen de krachten gelijkmatig — eenvoudig, betrouwbaar en scherp geprijsd.',
@@ -231,13 +234,16 @@ function zoekKleurHex(tekst) {
   return deel.length ? deel[0].hex : null;
 }
 
-// Paneelprofilering — één bron voor het formulier, de validatie en de e-mail.
-// `profiel` stuurt de SVG-preview aan (zie public/js/main.js).
-const PROFILERINGEN = [
-  { naam: 'Hoge profilering', profiel: 'hoog' },
-  { naam: 'Lage profilering', profiel: 'laag' },
-  { naam: 'Glad (geen profilering)', profiel: 'glad' }
+// Paneelafwerking volgens de Drutex-brochure: de structuur ís het reliëf.
+// Woodgrain = low embossing, Deep Mat = high embossing, Smooth = zonder reliëf.
+// Daarom één keuze in plaats van twee; `profiel` stuurt de SVG-preview aan.
+const AFWERKINGEN = [
+  { naam: 'Smooth', code: 'F', kort: 'Vlak paneel, zonder reliëf', afb: '/img/paneel-glad.jpg', profiel: 'glad' },
+  { naam: 'Woodgrain', code: 'L', kort: 'Fijne houtnerf, laag reliëf', afb: '/img/paneel-woodgrain.jpg', profiel: 'laag' },
+  { naam: 'Deep Mat', code: 'V', kort: 'Diep mat, hoog reliëf', afb: '/img/paneel-deepmat.jpg', profiel: 'hoog' }
 ];
+
+const DIKTES = ['40 mm', '60 mm (alleen D-GATE U)'];
 
 // ---------- Routes ----------
 app.get('/', (req, res) => res.render('index', { modellen, kleuren, page: 'home' }));
@@ -247,7 +253,7 @@ app.get('/kleuren', (req, res) => res.render('kleuren', { kleuren, page: 'kleure
 function toonFormulier(res, { status = 200, fout = null, waarden = {} } = {}) {
   res.status(status).render('offerte', {
     page: 'offerte', verzonden: false, fout, waarden,
-    kleuren, profileringen: PROFILERINGEN, som: maakSom()
+    kleuren, modellen, afwerkingen: AFWERKINGEN, diktes: DIKTES, som: maakSom()
   });
 }
 
@@ -336,7 +342,7 @@ app.post('/offerte', async (req, res) => {
   const d = req.body;
 
   const nette = (x) => String(x || '').trim().slice(0, 500);
-  // Kleur en profilering komen uit een vaste keuzelijst; alles daarbuiten negeren we.
+  // Model, dikte, afwerking en kleur komen uit vaste lijsten; alles daarbuiten negeren we.
   const uitLijst = (waarde, toegestaan) => (toegestaan.includes(waarde) ? waarde : '');
   const aanvraag = {
     naam: nette(d.naam),
@@ -345,10 +351,10 @@ app.post('/offerte', async (req, res) => {
     postcode: nette(d.postcode),
     breedte: nette(d.breedte),
     hoogte: nette(d.hoogte),
-    model: nette(d.model),
-    paneel: nette(d.paneel),
+    model: uitLijst(nette(d.model), modellen.map(m => `${m.naam} (${m.sub.toLowerCase()})`)),
+    dikte: uitLijst(nette(d.dikte), DIKTES),
+    afwerking: uitLijst(nette(d.afwerking), AFWERKINGEN.map(a => a.naam)),
     kleur: uitLijst(nette(d.kleur), kleuren.map(k => k.naam)),
-    profilering: uitLijst(nette(d.profilering), PROFILERINGEN.map(p => p.naam)),
     motor: nette(d.motor),
     opmerking: nette(d.opmerking)
   };
@@ -394,10 +400,13 @@ app.post('/offerte', async (req, res) => {
 
   // Extra's voor de e-mail: de hex van de gekozen kleur en het profiel-kenmerk,
   // zodat de mail de deur schematisch kan tekenen.
+  const gekozenAfwerking = AFWERKINGEN.find(a => a.naam === aanvraag.afwerking);
   const voorMail = {
     ...aanvraag,
+    // "40 mm — Woodgrain": één regel in de mail in plaats van twee losse velden
+    paneel: [aanvraag.dikte, aanvraag.afwerking].filter(Boolean).join(' — '),
     kleurHex: zoekKleurHex(aanvraag.kleur),
-    profiel: (PROFILERINGEN.find(p => p.naam === aanvraag.profilering) || {}).profiel || 'hoog'
+    profiel: (gekozenAfwerking || {}).profiel || 'laag'
   };
   const intern = offerteIntern({
     ...voorMail,

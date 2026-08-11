@@ -20,10 +20,16 @@ Draait op http://localhost:3000
 | `SITE_URL` | nee | Basis-URL in e-maillinks (default: https://maatwerkgaragedeur.nl) |
 
 ## Offerteformulier
-- **Kleur & profilering**: de klant kiest uit de vaste `kleuren`-lijst en `PROFILERINGEN`
-  (beide in server.js). De SVG-deur uit `views/partials/deur-svg.ejs` staat boven de keuzes
-  en werkt live mee. Server-side wordt gecontroleerd dat de waarde uit die lijsten komt;
-  iets anders wordt genegeerd (leeg gemaakt), niet geweigerd.
+- **Model, afwerking en kleur** kiest de klant uit vaste lijsten in server.js
+  (`modellen`, `AFWERKINGEN`, `DIKTES`, `kleuren`). Server-side wordt gecontroleerd dat de
+  waarde uit die lijst komt; iets anders wordt genegeerd (leeg gemaakt), niet geweigerd.
+- **Productfoto's** staan in `public/img/` en komen uit de officiële Drutex D-GATE-brochure:
+  per model de render met het veersysteem, plus de drie paneelafwerkingen.
+- **Paneelafwerking = reliëf.** Volgens de brochure is Woodgrain low embossing (L),
+  Deep Mat high embossing (V) en Smooth zonder reliëf (F) — dus één keuze, geen aparte
+  "profilering". `AFWERKINGEN[].profiel` stuurt de SVG-preview aan.
+- De SVG-deur uit `views/partials/deur-svg.ejs` staat boven de keuzes en werkt live mee
+  (`metOpties: false` verbergt de eigen knoppen van dat partial).
 - **Anti-bot**: verborgen honeypot-veld + een rekensom (`3 + 5`) die HMAC-ondertekend
   in het formulier zit — geen sessie of database nodig, geldig voor 2 uur.
 - **Rate limiting**: max 5 aanvragen per IP per uur; herhaald misbruik levert een dagblokkade op.
