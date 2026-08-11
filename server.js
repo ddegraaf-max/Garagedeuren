@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.9.0'; // cache-busting ?v=
+const SITE_VERSION = '1.10.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -144,6 +144,7 @@ const modellen = [
   {
     slug: 'd-gate-u',
     afb: '/img/d-gate-u.jpg',
+    detail: '/img/d-gate-u-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE U',
     sub: 'Torsieveer vóór',
     kort: 'De allrounder. Torsieveer aan de voorzijde, geschikt voor panelen tot 250 kg. Robuust, betrouwbaar en als enige leverbaar met het extra dikke 60 mm paneel.',
@@ -161,6 +162,7 @@ const modellen = [
   {
     slug: 'd-gate-b',
     afb: '/img/d-gate-b.jpg',
+    detail: '/img/d-gate-b-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE B',
     sub: 'Torsieveer achter',
     kort: 'De stille kracht. Torsieveer aan de achterzijde voor extra soepel en stil openen — ideaal als er weinig ruimte boven de opening (latei) is.',
@@ -176,6 +178,7 @@ const modellen = [
   {
     slug: 'd-gate-t',
     afb: '/img/d-gate-t.jpg',
+    detail: '/img/d-gate-t-detail.jpg', // close-up van het veersysteem, verschijnt bij hover
     naam: 'D-GATE T',
     sub: 'Trekveren',
     kort: 'De slimme instapper. Trekveren verticaal in het kozijn verdelen de krachten gelijkmatig — eenvoudig, betrouwbaar en scherp geprijsd.',

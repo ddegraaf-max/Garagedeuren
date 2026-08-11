@@ -571,9 +571,36 @@ a { color: inherit; }
   border-color: var(--accent-diep); background: var(--papier);
   box-shadow: 0 0 0 2px rgba(217, 127, 26, 0.25);
 }
+/* Beeldvlak met twee foto's: de deur, en bij hover de close-up van het veersysteem */
+.model-beeld {
+  display: block; position: relative; margin-bottom: 0.45rem;
+  border-radius: 8px; overflow: hidden; background: #fff;
+  aspect-ratio: 16 / 9;
+}
 .offerte-form .model-tegel img {
-  display: block; width: 100%; height: auto; margin-bottom: 0.45rem;
-  border-radius: 8px; background: #fff;
+  display: block; width: 100%; height: 100%; margin-bottom: 0;
+  object-fit: cover; background: #fff;
+}
+.model-detailfoto {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.22s ease;
+}
+.model-tegel.met-detail:hover .model-detailfoto,
+.model-tegel.met-detail:focus-within .model-detailfoto { opacity: 1; }
+.model-loep {
+  position: absolute; left: 6px; bottom: 6px;
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--antraciet);
+  background: rgba(242, 163, 60, 0.92); border-radius: 999px;
+  padding: 0.12rem 0.5rem; opacity: 0.9; transition: opacity 0.22s ease;
+}
+.model-tegel.met-detail:hover .model-loep { opacity: 0; }
+
+/* Aanraakschermen kennen geen hover: daar tonen we de close-up gewoon naast de deur */
+@media (hover: none) {
+  .model-detailfoto { position: static; opacity: 1; margin-top: 4px; }
+  .model-beeld { aspect-ratio: auto; }
+  .model-loep { display: none; }
 }
 .offerte-form .model-tegel input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
 .model-naam { display: block; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 0.98rem; color: var(--inkt); }
