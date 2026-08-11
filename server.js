@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.20.0'; // cache-busting ?v=
+const SITE_VERSION = '1.21.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -131,11 +131,17 @@ setInterval(() => {
   }
 }, UUR).unref();
 
+// Basis-URL voor de deelkaart (Open Graph): die eist absolute URLs,
+// een pad als /img/og.jpg wordt door WhatsApp genegeerd.
+const SITE_URL = (process.env.SITE_URL || 'https://maatwerkgaragedeur.nl').replace(/\/$/, '');
+
 // Gedeelde locals
 app.use((req, res, next) => {
   res.locals.v = SITE_VERSION;
   res.locals.year = new Date().getFullYear();
   res.locals.path = req.path;
+  res.locals.siteUrl = SITE_URL;
+  res.locals.paginaUrl = SITE_URL + req.path;
   next();
 });
 

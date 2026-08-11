@@ -62,3 +62,12 @@ dan lijnen op de verkeerde plek.
 
 ## Cache-busting
 Verhoog `SITE_VERSION` in server.js bij CSS/JS-wijzigingen (`?v=`).
+
+## Deelkaart (Open Graph)
+`public/img/og.jpg` (1200×630) is wat WhatsApp, Facebook en LinkedIn tonen bij een
+gedeelde link. De tags staan in `views/partials/head.ejs`; `og:image` moet een
+absolute URL zijn, vandaar `SITE_URL` in server.js. Een pagina kan `ogTitel` en
+`ogTekst` meegeven aan `res.render` om titel en omschrijving te overschrijven.
+
+Let op: WhatsApp cachet de kaart per URL. Na een wijziging pikt het de nieuwe
+afbeelding pas op als `SITE_VERSION` is opgehoogd (die zit in de `og:image`-URL).
