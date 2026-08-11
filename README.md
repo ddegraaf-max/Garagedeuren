@@ -65,7 +65,9 @@ Verhoog `SITE_VERSION` in server.js bij CSS/JS-wijzigingen (`?v=`).
 
 ## Deelkaart (Open Graph)
 `public/img/og.jpg` (1200×630) is wat WhatsApp, Facebook en LinkedIn tonen bij een
-gedeelde link. De tags staan in `views/partials/head.ejs`; `og:image` moet een
+gedeelde link. Het is een schermafbeelding van de homepage, bijgesneden op 1200×630.
+Vernieuwen: maak een schermafbeelding van de bovenkant van de homepage in een breed
+venster (verhouding ongeveer 1,9:1) en schaal die naar 1200×630. De tags staan in `views/partials/head.ejs`; `og:image` moet een
 absolute URL zijn, vandaar `SITE_URL` in server.js. Een pagina kan `ogTitel` en
 `ogTekst` meegeven aan `res.render` om titel en omschrijving te overschrijven.
 
