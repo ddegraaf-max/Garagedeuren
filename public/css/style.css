@@ -425,7 +425,36 @@ a { color: inherit; }
 .kleur-naam { font-size: 0.74rem; font-weight: 600; line-height: 1.25; display: block; color: var(--inkt); }
 
 /* ---------- offerteformulier ---------- */
-.offerte-wrap { max-width: 760px; }
+.offerte-wrap { max-width: 1120px; }
+
+/* Formulier links, deur-preview rechts en meescrollend */
+.offerte-layout {
+  display: grid; grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 2.2rem; align-items: start;
+}
+.offerte-layout > .offerte-form { grid-column: 1; grid-row: 1; }
+.offerte-zijkant { grid-column: 2; grid-row: 1; position: sticky; top: 88px; }
+.offerte-preview .deur-visual svg {
+  width: 100%; height: auto; display: block;
+  border-radius: 10px; border: 1px solid var(--lijn);
+}
+.preview-hint {
+  font-size: 0.8rem; line-height: 1.45; color: var(--inkt-zacht);
+  margin-top: 0.6rem; text-align: center;
+}
+
+/* Onder 920px: één kolom, preview blijft bovenaan plakken maar compacter */
+@media (max-width: 920px) {
+  .offerte-layout { grid-template-columns: 1fr; gap: 1rem; }
+  .offerte-layout > .offerte-form { grid-column: 1; grid-row: 2; }
+  .offerte-zijkant {
+    grid-column: 1; grid-row: 1; top: 0; z-index: 20;
+    background: var(--papier); padding: 0.5rem 0 0.6rem;
+    box-shadow: 0 8px 12px -10px rgba(30, 34, 37, 0.5);
+  }
+  .offerte-preview .deur-visual svg { height: 27vh; width: auto; margin: 0 auto; }
+  .preview-hint { display: none; }
+}
 .offerte-form fieldset {
   border: 1px solid var(--lijn); border-radius: var(--radius);
   background: var(--wit); padding: 1.6rem 1.6rem 1.2rem; margin-bottom: 1.4rem;
@@ -453,15 +482,6 @@ a { color: inherit; }
 .form-klein { font-size: 0.85rem; color: var(--inkt-zacht); margin-top: 1rem; }
 
 /* ---------- kleur- en profileringkeuze in het offerteformulier ---------- */
-.offerte-preview { margin-bottom: 1.4rem; }
-.offerte-preview .deur-visual svg {
-  width: 100%; height: auto; display: block;
-  border-radius: 10px; border: 1px solid var(--lijn);
-}
-.preview-hint {
-  font-size: 0.8rem; color: var(--inkt-zacht);
-  margin-top: 0.5rem; text-align: center;
-}
 .kleur-veld .optie-label {
   display: block; font-weight: 700; font-size: 0.78rem;
   text-transform: uppercase; letter-spacing: 0.08em;
@@ -558,6 +578,7 @@ a { color: inherit; }
 .offerte-form .model-tegel input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
 .model-naam { display: block; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 0.98rem; color: var(--inkt); }
 .model-sub { display: block; font-size: 0.8rem; color: var(--inkt-zacht); margin-top: 0.1rem; }
+.model-tekst { display: block; font-size: 0.78rem; line-height: 1.45; color: var(--inkt-zacht); margin-top: 0.35rem; }
 .model-spec { display: block; font-size: 0.72rem; color: var(--inkt-zacht); margin-top: 0.35rem; padding-top: 0.35rem; border-top: 1px solid var(--lijn); }
 .model-tegel-geen { display: flex !important; flex-direction: column; justify-content: center; text-align: center; }
 
@@ -707,3 +728,5 @@ a { color: inherit; }
 
 /* teaser inmeet-assistent */
 .teaser-visual svg { width: 100%; height: auto; display: block; }
+
+.model-brochure { font-size: 0.92rem; color: var(--inkt-zacht); }

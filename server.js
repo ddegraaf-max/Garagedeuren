@@ -7,7 +7,7 @@ const { offerteIntern, offerteBevestiging } = require('./emails');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SITE_VERSION = '1.7.0'; // cache-busting ?v=
+const SITE_VERSION = '1.8.0'; // cache-busting ?v=
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -147,6 +147,8 @@ const modellen = [
     naam: 'D-GATE U',
     sub: 'Torsieveer vóór',
     kort: 'De allrounder. Torsieveer aan de voorzijde, geschikt voor panelen tot 250 kg. Robuust, betrouwbaar en als enige leverbaar met het extra dikke 60 mm paneel.',
+    // Vertaald uit de Drutex D-GATE-brochure
+    beschrijving: 'De D-GATE U heeft een torsieveer die vóór in de latei is gemonteerd. Dat maakt de deur betrouwbaar, duurzaam en veilig in gebruik. De stevige constructie draagt panelen tot 250 kg. Door het brede aanbod aan kleuren en paneelstructuren past de deur bij elke bouwstijl.',
     punten: [
       'Torsieveer aan de voorzijde gemonteerd',
       'Draagt panelen tot 250 kg',
@@ -162,6 +164,7 @@ const modellen = [
     naam: 'D-GATE B',
     sub: 'Torsieveer achter',
     kort: 'De stille kracht. Torsieveer aan de achterzijde voor extra soepel en stil openen — ideaal als er weinig ruimte boven de opening (latei) is.',
+    beschrijving: 'De D-GATE B is een betrouwbare sectionaaldeur met een torsieveer aan de achterzijde: een moderne oplossing die functionaliteit, veiligheid en uitstraling combineert. De achterliggende torsieveer laat de deur soepel en stil openen en sluiten, wat het dagelijks gebruik een stuk comfortabeler maakt. Past net zo goed bij moderne als bij klassieke bouw.',
     punten: [
       'Torsieveer aan de achterzijde',
       'Soepel en stil in gebruik',
@@ -176,6 +179,7 @@ const modellen = [
     naam: 'D-GATE T',
     sub: 'Trekveren',
     kort: 'De slimme instapper. Trekveren verticaal in het kozijn verdelen de krachten gelijkmatig — eenvoudig, betrouwbaar en scherp geprijsd.',
+    beschrijving: 'De D-GATE T met trekveer combineert een eenvoudige constructie met hoge functionaliteit en betrouwbaarheid. De trekveer zit verticaal in het kozijn en verdeelt de krachten gelijkmatig, waardoor de deur soepel, stil en veilig opent en sluit. Een uitstekende keuze als je een duurzame, veilige en voordelige oplossing voor je garage zoekt.',
     punten: [
       'Trekveren verticaal in het kozijn',
       'Gelijkmatige krachtverdeling',

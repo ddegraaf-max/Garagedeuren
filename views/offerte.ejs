@@ -33,6 +33,14 @@
           <p><%= fout %></p>
         </div>
       <% } %>
+      <div class="offerte-layout">
+      <aside class="offerte-zijkant">
+        <div class="offerte-preview">
+          <%- include('partials/deur-svg', { metOpties: false }) %>
+          <p class="preview-hint">Indicatieve weergave van je kleur- en afwerkingkeuze. Tijdens de gratis inmeting laten we echte stalen zien.</p>
+        </div>
+      </aside>
+
       <form method="POST" action="/offerte" class="offerte-form">
         <div style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
           <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
@@ -60,18 +68,13 @@
         <fieldset class="kleur-veld">
           <legend>Kleur &amp; afwerking <span class="optioneel">(optioneel — je ziet het direct)</span></legend>
 
-          <div class="offerte-preview">
-            <%- include('partials/deur-svg', { metOpties: false }) %>
-            <p class="preview-hint">Indicatieve weergave. Tijdens de gratis inmeting laten we echte kleurstalen zien.</p>
-          </div>
-
           <span class="optie-label">Paneelafwerking</span>
           <div class="afwerking-rooster">
             <% afwerkingen.forEach((a, i) => {
                  const aan = v.afwerking ? v.afwerking === a.naam : i === 1; %>
               <label class="afwerking-tegel" data-profiel="<%= a.profiel %>">
                 <input type="radio" name="afwerking" value="<%= a.naam %>"<%= aan ? ' checked' : '' %>>
-                <img src="<%= a.afb %>" alt="Paneel <%= a.naam %>" loading="lazy" width="337" height="260">
+                <img src="<%= a.afb %>" alt="Paneel <%= a.naam %>" loading="lazy" width="560" height="560">
                 <span class="afwerking-naam"><%= a.naam %> <span class="afwerking-code"><%= a.code %></span></span>
                 <span class="afwerking-kort"><%= a.kort %></span>
               </label>
@@ -112,6 +115,7 @@
                 <img src="<%= mo.afb %>" alt="<%= mo.naam %> — <%= mo.sub %>" loading="lazy" width="960" height="540">
                 <span class="model-naam"><%= mo.naam %></span>
                 <span class="model-sub"><%= mo.sub %></span>
+                <span class="model-tekst"><%= mo.kort %></span>
                 <span class="model-spec">Latei vanaf <%= mo.specs.latei %> &middot; tot <%= mo.specs.gewicht %></span>
               </label>
             <% }) %>
@@ -150,6 +154,7 @@
         <button type="submit" class="btn btn-primair btn-groot">Verstuur aanvraag</button>
         <p class="form-klein">Door te versturen ga je akkoord met onze <a href="/privacy">privacyverklaring</a>. Je gegevens worden uitsluitend gebruikt om je aanvraag te behandelen.</p>
       </form>
+      </div>
     <% } %>
   </div>
 </section>

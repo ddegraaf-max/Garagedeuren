@@ -29,6 +29,7 @@
             <h2><%= m.naam %></h2>
             <span class="model-sub"><%= m.sub %></span>
             <p><%= m.kort %></p>
+            <% if (m.beschrijving) { %><p class="model-brochure"><%= m.beschrijving %></p><% } %>
             <ul class="vinkjes">
               <% m.punten.forEach(p => { %><li><%= p %></li><% }) %>
             </ul>
